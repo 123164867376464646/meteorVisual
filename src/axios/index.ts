@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, {AxiosRequestHeaders} from 'axios'
 import { showMessage } from './status' // 引入状态码文件
 import { ElMessage } from 'element-plus' // 引入el 提示框，这个项目里用什么组件库这里引什么
 
@@ -16,7 +16,7 @@ axios.interceptors.request.use(
       //'Content-Type':'application/x-www-form-urlencoded',   // 传参方式表单
       'Content-Type': 'application/json;charset=UTF-8' // 传参方式json
       //   'token':'80c483d59ca86ad0393cf8a98416e2a1'              // 这里自定义配置，这里传的是token
-    }
+    } as AxiosRequestHeaders
     return config
   },
   (error) => {
