@@ -1,6 +1,20 @@
 <script setup>
-import {onMounted} from "vue";
+import {onMounted, provide, ref} from "vue";
 import data from "@/assets/testData/exp.json"
+import icon0 from "@/assets/png/icon0.png";
+import icon1 from "@/assets/png/icon1.png";
+import icon2 from "@/assets/png/icon2.png";
+import icon3 from "@/assets/png/icon3.png";
+import temperature0 from "@/assets/png/Vector@2x(4).png"
+import temperature1 from "@/assets/png/whiteIcon/Vector@2x(4).png"
+import precipitation0 from "@/assets/png/Vector@2x.png"
+import precipitation1 from "@/assets/png/whiteIcon/Vector@2x.png"
+import windSpeed0 from "@/assets/png/Vector@2x(1).png"
+import windSpeed1 from "@/assets/png/whiteIcon/Vector@2x(1).png"
+import humidity0 from "@/assets/png/Vector@2x(2).png"
+import humidity1 from "@/assets/png/whiteIcon/Vector@2x(2).png"
+import visibility0 from "@/assets/png/Vector@2x(3).png"
+import visibility1 from "@/assets/png/whiteIcon/Vector@2x(3).png"
 
 // onMounted(() => {
 //   const map = L.map('map').setView([29.566887749040042, 106.54472351074219], 13);//{lat: 29.566887749040042, lng: 106.54472351074219}
@@ -72,16 +86,202 @@ import data from "@/assets/testData/exp.json"
 //     });
 //   });
 // })
+let map = ref(null)
 
+const controlList = [
+  {
+    id: 0, icon: icon0, iconW: '20px', iconH: '15px', fn: () => {
+    }
+  },
+  {id: 1, icon: icon1, iconW: '20px', iconH: '20px', fn: () => exitFullscreenOrFullscreen()},
+  {id: 2, icon: icon2, iconW: '20px', iconH: '20px', fn: () => zoomControl('+')},
+  {id: 3, icon: icon3, iconW: '20px', iconH: '4px', fn: () => zoomControl('-')},
+]
+const optionList = ref([
+  {
+    id: 0,
+    name: '温度',
+    icon0: temperature0,
+    icon1: temperature1,
+    iconW: '9.34px',
+    iconH: '16px',
+    typeName: '高度',
+    optionsList: [
+      {
+        value: '海面',
+        label: '海面',
+      },
+      {
+        value: '地上100厘米',
+        label: '地上100厘米',
+      },
+      {
+        value: '地上2米',
+        label: '地上2米',
+      },
+      {
+        value: '异常，2m',
+        label: '异常，2m',
+      },
+      {
+        value: '950百帕，500米',
+        label: '950百帕，500米',
+      },
+    ],
+    fn: () => {
+      console.log('0')
+    }
+  },
+  {
+    id: 1, name: '降水量', icon0: precipitation0, icon1: precipitation1, iconW: '10px', iconH: '14.28px',
+    typeName: '累积',
+    optionsList: [
+      {
+        value: '每小时',
+        label: '每小时',
+      },
+      {
+        value: '每3个小时',
+        label: '每3个小时',
+      },
+      {
+        value: '开始于10-10 08:00',
+        label: '开始于10-10 08:00',
+      },
+      {
+        value: '每月异常',
+        label: '每月异常',
+      },
+    ], fn: () => {
+      console.log('1')
+    }
+  },
+  {
+    id: 2, name: '风速', icon0: windSpeed0, icon1: windSpeed1, iconW: '14.55px', iconH: '14px',
+    typeName: '高度',
+    optionsList: [
+      {
+        value: '地上10米',
+        label: '地上10米',
+      },
+      {
+        value: '地上100米',
+        label: '地上100米',
+      },
+      {
+        value: '地上250米',
+        label: '地上250米',
+      },
+      {
+        value: '950百帕，500米',
+        label: '950百帕，500米',
+      },
+      {
+        value: '925百帕，750米',
+        label: '925百帕，750米',
+      },
+    ], fn: () => {
+      console.log('2')
+    }
+  },
+  {
+    id: 3, name: '湿度', icon0: humidity0, icon1: humidity1, iconW: '14.02px', iconH: '15px',
+    typeName: '波浪',
+    optionsList: [
+      {
+        value: '地上2米',
+        label: '地上2米',
+      },
+      {
+        value: '900百帕，1000米',
+        label: '900百帕，1000米',
+      },
+      {
+        value: '850百帕，1500米',
+        label: '850百帕，1500米',
+      },
+      {
+        value: '700百帕，3000米',
+        label: '700百帕，3000米',
+      },
+      {
+        value: '露点',
+        label: '露点',
+      },
+    ], fn: () => {
+      console.log('3')
+    }
+  },
+  {
+    id: 4, name: '能见度', icon0: visibility0, icon1: visibility1, iconW: '15.01px', iconH: '9px',
+    typeName: '范围',
+    optionsList: [
+      {
+        value: '10米',
+        label: '10米',
+      },
+      {
+        value: '20米',
+        label: '20米',
+      },
+      {
+        value: '50米',
+        label: '50米',
+      },
+      {
+        value: '100米',
+        label: '100米',
+      },
+      {
+        value: '500米',
+        label: '500米',
+      },
+    ], fn: () => {
+      console.log('4')
+    }
+  },
+])
 
+const zoomControl = (type) => {
+  if (type === '+') {
+    map.zoomIn()
+  } else {
+    map.zoomOut()
+  }
+}
+//全屏切换
+
+const exitFullscreenOrFullscreen = () => {
+  if (document.fullscreenElement) {
+    document.exitFullscreen()
+  } else {
+    document.documentElement.requestFullscreen()
+  }
+}
 onMounted(() => {
-  let map = L.map('map', {
+  map = L.map('map', {
     center: [39.90403, 116.407526],
-    zoom: 10
+    zoom: 10,
+    attributionControl: false,//版权控件添加到地图中
+    zoomControl: false //缩放控件添加到地图中
   }).setView([39.90403, 116.407526], 10);//北京
+
+  // const zoomControl =  L.control.zoom({
+  //   zoomInText:'<div style="color:rgba(47, 128, 237, 1)">+</div>',
+  //   zoomInTitle:'放大',
+  //   zoomOutText:'<div style="color:rgba(47, 128, 237, 1)">-</div>',
+  //   zoomOutTitle:'缩小',
+  // }).addTo(map)
+  // zoomControl.setPosition('topright')
   {
     /*高德*/
+    /*默认地图*/
     L.tileLayer.chinaProvider('GaoDe.Normal.Map', {maxZoom: 18, minZoom: 3, subtitle: '高德地图'}).addTo(map);
+
+    /*卫星地图*/
+    // L.tileLayer.chinaProvider('GaoDe.Satellite.Map', {maxZoom: 18, minZoom: 3, subtitle: '高德地图'}).addTo(map);
+    // L.tileLayer.chinaProvider('GaoDe.Satellite.Annotion', {maxZoom: 18, minZoom: 3, subtitle: '高德地图'}).addTo(map);
+
     /* 黑色map */
     // let url = 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png';
     // L.tileLayer(url, {
@@ -100,7 +300,17 @@ onMounted(() => {
     Promise.all(promises).then(function (arrays) {
       let vf = L.VectorField.fromASCIIGrids(arrays[0], arrays[1]);
       let layer = L.canvasLayer.vectorFieldAnim(vf).addTo(map);
-      // map.fitBounds(layer.getBounds());//定位到此处
+      // console.log("🚀 ~ name:layer.getBounds() ", layer.getBounds())
+      map.fitBounds(layer.getBounds());//定位到此处
+      /*当使用map.fitBounds(layer.getBounds())时，地图会根据动画风场的边界自动调整自身的边界，以确保动画风场完全可见。
+      layer.getBounds()返回动画风场图层的边界范围，包括最小经度、最小纬度、最大经度和最大纬度。
+      通过调用map.fitBounds()并传入这个边界范围，地图将自动缩放和平移，使动画风场居中显示，并且整个动画风场都在可视范围内。
+      这样做的好处是可以确保动画风场的所有数据都能在地图上完整显示，而不会被裁剪或超出地图范围。
+      同时，也可以确保地图视野最大程度地覆盖到动画风场的区域，使用户能够更好地观察和交互。
+      请注意，map.fitBounds()是一个Leaflet.js库提供的方法，用于自动调整地图边界。
+      它会根据提供的边界范围计算出最佳的缩放级别和中心点，并将地图调整到这个边界范围内。
+      总结起来，通过调用map.fitBounds(layer.getBounds())，地图会根据动画风场图层的边界自动调整自身的边界，以确保整个动画风场可见，
+      并且最大程度地覆盖到动画风场的区域。*/
 
       layer.on('click', function (e) {
         if (e.value !== null) {
@@ -116,12 +326,101 @@ onMounted(() => {
       });
     });
   }
+  /*功能区域*/
+  {
+    const popup = L.popup();
 
+    function onMapClick(e) {
+      popup
+          .setLatLng(e.latlng)
+          .setContent("You clicked the map at <br>" + e.latlng.toString())
+          .openOn(map);
+    }
+
+    map.on('click', onMapClick);
+  }
+
+
+})
+let selectedID = ref(0)
+const selected = (id) => {
+  selectedID.value = id
+}
+const value = ref('')
+const value2 = ref('')
+
+const date = ref(new Date())
+
+onMounted(() => {
+  // value.value = optionList.value[0].optionsList[1].value
 })
 </script>
 
 <template>
   <div id="map"></div>
+  <div class="left-wrapper">
+    <div class="item" :class="{ active: item.id ===selectedID  }" @click="selected(item.id);item.fn()"
+         v-for="item in optionList"
+         :key="item.id">
+      <div class="icon-info">
+        <img class="img" :style="`width:${item.iconW};height:${item.iconH};`"
+             :src="item.id ===selectedID?item.icon1:item.icon0" alt="">
+      </div>
+      <div class="bgColor">
+        {{ item.name }}
+      </div>
+      <div class="selectOptions" v-show="item.id ===selectedID">
+        <span class="typeName">{{ item.typeName }}:</span>
+        <el-select v-model="value" placeholder="" size="small">
+          <el-option
+              v-for="i in item.optionsList"
+              :key="i.value"
+              :label="i.label"
+              :value="i.value"
+          />
+        </el-select>
+      </div>
+    </div>
+  </div>
+  <div class="right-wrapper">
+    <div v-for="item in controlList" :key="item.id">
+      <div class="item-wrapper" @click="item.fn()">
+        <img class="img" :style="`width:${item.iconW};height:${item.iconH};`" :src="item.icon" alt="">
+      </div>
+    </div>
+  </div>
+  <div class="bottom-wrapper">
+    <div class="playButton">
+      <img class="img" src="@/assets/png/Vector@2x(7).png" alt="">
+      <span class="text">播放</span>
+    </div>
+    <div class="backButton">
+      <img class="img" src="@/assets/png/Vector@2x(5).png" alt="">
+    </div>
+    <div class="progressBar">
+      <div class="dateBg">
+        <el-date-picker
+            v-model="date"
+            type="date"
+            placeholder="Pick a date"
+            :default-value="new Date()"
+        />
+      </div>
+    </div>
+    <div class="gotoButton">
+      <img class="img" src="@/assets/png/Vector@2x(6).png" alt="">
+    </div>
+    <div class="settingButton">
+      <el-select v-model="value2" class="m-2" placeholder="数值" placement="top">
+        <el-option
+            v-for="item in [{value:'正常',label:'正常'},{value:'强',label:'强'},{value:'薄',label:'薄'},{value:'弱',label:'弱'},]"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+        />
+      </el-select>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -130,4 +429,226 @@ onMounted(() => {
   width: 100vw;
   height: 100vh;
 }
+
+::v-deep(.el-input__wrapper) {
+  background: #0000;
+  width: 80px;
+  box-shadow: none;
+}
+
+.el-select {
+  --el-select-input-focus-border-color: none;
+}
+
+::v-deep(.el-input__wrapper:hover) {
+  box-shadow: 0 0 0 0px var(--el-input-hover-border-color) inset !important;
+}
+
+.left-wrapper {
+  z-index: 999;
+  height: 350px;
+  position: absolute;
+  top: 285px;
+  left: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .item {
+    pointer-events: all;
+
+    .icon-info {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      box-shadow: 3px 0 5px -3px rgba(0, 0, 0, .25);
+    }
+
+    .bgColor {
+      position: relative;
+      z-index: 1;
+      width: 90px;
+      height: 30px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, .4);
+      background: rgba(0, 0, 0, 0.5);
+      margin-top: -30px;
+      margin-left: 15px;
+      border-top-right-radius: 15px;
+      border-bottom-right-radius: 15px;
+      font-size: 12px;
+      font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+      font-weight: 400;
+      color: #FFFFFF;
+      line-height: 14px;
+      letter-spacing: 1px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .selectOptions {
+      width: 140px;
+      height: 21px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      margin-top: 10px;
+
+      font-size: 12px;
+      font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+      font-weight: 400;
+      color: #FFFFFF;
+      line-height: 12px;
+      letter-spacing: 2px;
+
+      .typeName {
+        margin-right: 8px;
+        margin-left: 10px;
+      }
+
+    }
+
+    .bgColor:hover, .selectOptions:hover {
+      background: rgba(0, 0, 0, 0.75);
+    }
+  }
+
+  .item.active .icon-info {
+    background: rgba(47, 128, 237, 1);
+  }
+
+  .item.active .bgColor {
+    background: rgba(47, 128, 237, 0.6);
+  }
+}
+
+
+.right-wrapper {
+  z-index: 999;
+  position: absolute;
+  top: 90px;
+  right: 40px;
+  width: 50px;
+  height: 332px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .item-wrapper {
+    pointer-events: all;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .img {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.bottom-wrapper {
+  pointer-events: all;
+  z-index: 999;
+  position: absolute;
+  left: 40px;
+  bottom: 40px;
+  display: flex;
+  align-items: center;
+
+  .playButton {
+    width: 97px;
+    height: 50px;
+    background: #fff;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    margin-right: 91px;
+
+    .img {
+      width: 16px;
+      height: 20px;
+      margin-left: 21px;
+      margin-right: 12px;
+    }
+
+    .text {
+      font-size: 12px;
+      font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+      font-weight: 400;
+      color: #2F80ED;
+      line-height: 14px;
+      letter-spacing: 1px;
+    }
+  }
+
+  .backButton {
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 50px;
+
+    .img {
+      width: 13px;
+      height: 20px;
+    }
+  }
+
+  .progressBar {
+    width: 1266px;
+    height: 20px;
+    margin-right: 50px;
+
+    .dateBg {
+      width: 170px;
+      height: 20px;
+      background: #fff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .gotoButton {
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 50px;
+
+    .img {
+      width: 13px;
+      height: 20px;
+    }
+  }
+
+  .settingButton {
+    width: 101px;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    text-align: center;
+  }
+
+  .settingButton:hover {
+    background: rgba(0, 0, 0, 0.75);
+  }
+}
+
 </style>
