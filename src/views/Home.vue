@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, provide, ref} from "vue";
+import {onMounted, ref} from "vue";
 import data from "@/assets/testData/exp.json"
 import icon0 from "@/assets/png/icon0.png";
 import icon1 from "@/assets/png/icon1.png";
@@ -276,7 +276,10 @@ onMounted(() => {
   {
     /*高德*/
     /*默认地图*/
-    L.tileLayer.chinaProvider('GaoDe.Normal.Map', {maxZoom: 18, minZoom: 3, subtitle: '高德地图'}).addTo(map);
+    // L.tileLayer.chinaProvider('Geoq.Normal.Gray', {maxZoom: 18, minZoom: 3, subtitle: 'TianDiTu'}).addTo(map);
+
+    L.tileLayer.chinaProvider('GaoDe.Satellite.Map', {maxZoom: 18, minZoom: 3, subtitle: '高德'}).addTo(map);
+    L.tileLayer.chinaProvider('GaoDe.Satellite.Annotion', {maxZoom: 18, minZoom: 3, subtitle: '高德'}).addTo(map);
 
     /*卫星地图*/
     // L.tileLayer.chinaProvider('GaoDe.Satellite.Map', {maxZoom: 18, minZoom: 3, subtitle: '高德地图'}).addTo(map);
@@ -351,8 +354,207 @@ const value2 = ref('')
 
 const date = ref(new Date())
 
+
+let selectedTime = ref()
 onMounted(() => {
   // value.value = optionList.value[0].optionsList[1].value
+
+  // 定义时间范围
+  const startDate = new Date('2020-01-01');
+  const endDate = new Date('2020-01-02');
+
+
+  //获取svg
+  const svg = d3.select('.axis')
+  // 获取svg宽度
+  const svgWidth = svg.node().getBoundingClientRect().width;
+
+// 初始化时间比例尺
+  const xScale = d3.scaleTime()
+      .domain([startDate, endDate])
+      .range([20, svgWidth - 20]);
+
+// 创建D3时间轴
+  const xAxis = d3.axisBottom(xScale)
+      .tickFormat(d3.timeFormat('%H:%M'))
+      .tickPadding(10)
+      .tickSizeOuter(0)
+  // .ticks(20); // ticks刻度值的个数
+
+
+// 渲染D3时间轴
+  svg.append('g')
+      .attr('transform', 'translate(0, 38)')
+      .call(xAxis)
+      .select('.domain')
+      .style('stroke-width', '10px')
+      .style('stroke', 'rgba(0,255,0,0)')
+      .style('pointer-events', 'auto')
+      .style('cursor','pointer')
+
+
+  //隐藏刻度线
+  svg.selectAll("line").style("display", "none");
+  //文本颜色
+  svg.selectAll("text").style("color", 'white');
+
+
+  // 获取svg高度
+  const svgHeight = svg.node().getBoundingClientRect().height;
+// 添加黑色背景
+  svg.insert('rect', ':first-child')
+      .attr('x', 0)
+      .attr('y', 33.5)
+      .attr('width', svgWidth)
+      .attr('height', 10)
+      .style('fill', 'rgba(0,0,0,0.333)')
+      .style('pointer-events', 'none');
+
+//添加进度条
+  const progress = svg.append('rect')
+      .attr('x', xScale(startDate))
+      .attr('y', 35.5)
+      .attr('width', 0)
+      .attr('height', 6)
+      .style('fill', '#2F80ED')
+      .style('pointer-events', 'none')
+  // 添加提示刻度线
+  const tooltipTick = svg.append('line')
+      .attr('x1', 0)
+      .attr('y1', 25)
+      .attr('x2', 0)
+      .attr('y2', 33.5)
+      .style('stroke', 'rgba(0,0,0,0.333)')
+      .style('stroke-width', 2)
+      .style('opacity', 0);
+  // 添加圆点
+  const circle = svg.append('circle')
+      .attr('cx', xScale(startDate))
+      .attr('cy', 38)
+      .attr('r', 8)
+      .style('fill', 'white')
+      .style('cursor','e-resize')
+      // .style('pointer-events', 'none');
+
+  // 鼠标点击事件
+  circle.on('click', function () {
+    console.log("🚀 ~ name:111", '111')
+  });
+
+  circle.on('mousemove', function () {
+
+  });
+
+
+  let cx
+  svg.select('g')
+      .on('click', function (event) {
+        cx = d3.pointer(event)[0];
+        const newDate = xScale.invert(cx);
+        circle.attr('cx', xScale(newDate));
+
+        const progressWidth = cx - xScale(startDate);
+        progress.attr('width', progressWidth);
+      });
+
+
+// 拖动事件
+  circle.call(d3.drag()
+      .on('drag', function (event) {
+        cx = event.x;
+        cx = Math.max(Math.min(cx, svgWidth - 20), 20); // 限制拖动范围在时间轴范围内
+        d3.select(this).attr('cx', cx);
+        const newDate = xScale.invert(cx);
+        const progressWidth = xScale(newDate) - xScale(startDate);
+        progress.attr('width', progressWidth);
+      })
+  );
+
+  // 添加提示框
+  const tooltip = svg.append('g')
+      .attr('transform', 'translate(0, 35)');
+
+  const tooltipRect = tooltip.append('rect')
+      .attr('width', 60)
+      .attr('height', 20)
+      .attr('y', 5)
+      .attr('rx', 10) // 设置圆角半径
+      .attr('ry', 10) // 设置圆角半径
+      .attr('fill', 'rgba(0,0,0,0.333)')
+      .style('opacity', 0);
+
+  const tooltipText = tooltip.append('text')
+      .attr('x', 30)
+      .attr('y', 20)
+      .attr('text-anchor', 'middle')
+      .text('')
+      .style('opacity', 0)
+      .style('fill', 'white')
+
+// 鼠标悬停事件
+  svg.select('.domain').on('mousemove', function (event) {
+
+    // 计算提示框位置
+    const mouseX = d3.pointer(event)[0];
+    const x = mouseX - 30;
+
+    // 计算并显示对应时间
+    const date = xScale.invert(mouseX);
+    tooltipText.text(d3.timeFormat('%H:%M')(date));
+
+    // 显示提示框
+    tooltip.attr('transform', `translate(${x}, 0)`);
+    tooltipRect.style('opacity', 1);
+    tooltipText.style('opacity', 1);
+    // 显示刻度线
+    tooltipTick.style('opacity', 1)
+        .attr('transform', `translate(${mouseX}, 0)`);
+  }).on('mouseout', function () {
+    // 隐藏提示框
+    tooltipRect.style('opacity', 0);
+    tooltipText.style('opacity', 0);
+    // 隐藏刻度线
+    tooltipTick.style('opacity', 0);
+  });
+
+
+
+// 模拟数据
+  const data = [
+    {time: new Date('2020-01-01 12:00'), value: 10},
+    {time: new Date('2020-01-01 18:00'), value: 20},
+    //...
+  ];
+
+// 点击回调函数
+//   function onclick(d) {
+//     selectedTime.value = d;
+//     // filterData();
+//     // updateAxis();
+//     // updateMap();
+//   }
+
+// // Leaflet地图和热力图层
+//   const map = L.map('map').setView([51.505, -0.09], 13);
+//
+//   const heatLayer = L.heatLayer(data, {radius: 20}).addTo(map);
+//
+// // 数据过滤
+//   function filterData() {
+//     heatLayer.setLatLngs(data.filter(d => d.time > selectedTime.value));
+//   }
+//
+// // 地图更新
+//   function updateMap() {
+//     map.invalidateSize();
+//   }
+//
+// // 时间轴高亮
+//   function updateAxis() {
+//     // 高亮代码
+//     svg.selectAll('.tick')
+//         .attr('font-weight', d => d > selectedTime.value ? 'bold' : 'normal');
+//   }
 })
 </script>
 
@@ -406,6 +608,7 @@ onMounted(() => {
             :default-value="new Date()"
         />
       </div>
+      <svg class="axis"></svg>
     </div>
     <div class="gotoButton">
       <img class="img" src="@/assets/png/Vector@2x(6).png" alt="">
@@ -611,6 +814,8 @@ onMounted(() => {
     width: 1266px;
     height: 20px;
     margin-right: 50px;
+    display: flex;
+    align-items: center;
 
     .dateBg {
       width: 170px;
@@ -619,6 +824,16 @@ onMounted(() => {
       border-radius: 10px;
       display: flex;
       align-items: center;
+
+    //margin-right: 20px;
+    }
+
+    .axis {
+      height: 80px;
+      display: inline-block;
+      /*border: 1px solid red;*/
+      flex: 1;
+      /*background: blue;*/
     }
   }
 
@@ -640,7 +855,7 @@ onMounted(() => {
 
   .settingButton {
     width: 101px;
-    height: 30px;
+    height: 5px;
     background: rgba(0, 0, 0, 0.5);
     border-radius: 15px;
     text-align: center;
