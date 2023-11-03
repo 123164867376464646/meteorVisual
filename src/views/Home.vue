@@ -15,6 +15,8 @@ import humidity0 from "@/assets/png/Vector@2x(2).png"
 import humidity1 from "@/assets/png/whiteIcon/Vector@2x(2).png"
 import visibility0 from "@/assets/png/Vector@2x(3).png"
 import visibility1 from "@/assets/png/whiteIcon/Vector@2x(3).png"
+import IconDropDown from "@/components/IconDropDown.vue";
+
 
 // onMounted(() => {
 //   const map = L.map('map').setView([29.566887749040042, 106.54472351074219], 13);//{lat: 29.566887749040042, lng: 106.54472351074219}
@@ -682,9 +684,9 @@ onMounted(() => {
         {{ item.name }}
       </div>
       <div class="selectOptions" v-show="item.id ===selectedID&&item.childrenOptionsList">
-        <div class="typeName">{{ item.typeName }}:</div>
+        <div class="typeName"><span>{{ item.typeName }}:</span></div>
         <el-select v-model="item.value" :placeholder="item.childrenOptionsList&&item.childrenOptionsList[0].value"
-                   size="small"
+                   size="small" :suffix-icon="IconDropDown"
         >
           <el-option
               v-for="i in item.childrenOptionsList"
@@ -728,7 +730,7 @@ onMounted(() => {
       <img class="img" src="@/assets/png/Vector@2x(6).png" alt="">
     </div>
     <div class="settingButton">
-      <el-select v-model="value" class="m-2" placeholder="数值" placement="top">
+      <el-select v-model="value" class="m-2" placeholder="数值" placement="top" :suffix-icon="IconDropDown">
         <el-option
             v-for="item in [{value:'正常',label:'正常'},{value:'强',label:'强'},{value:'薄',label:'薄'},{value:'弱',label:'弱'},]"
             :key="item.value"
@@ -750,6 +752,8 @@ onMounted(() => {
 
 .el-select {
   --el-select-input-focus-border-color: none;
+  display: flex;
+  align-items: center;
 }
 
 ::v-deep(.el-input__wrapper:hover) {
@@ -762,9 +766,22 @@ onMounted(() => {
 
 ::v-deep(input::-webkit-input-placeholder,input:-moz-placeholder,input:-ms-input-placeholder) {
   color: white;
+  font-size: rem(12);
+  transform: translateY(vh(1));
 }
 
-
+:deep(.el-input--small .el-input__inner ) {
+  height: vh(24);
+  font-size: rem(12);
+}
+:deep(.el-input__suffix){
+  transform: translateX(vw(-10));
+}
+.el-select-dropdown__item{
+  font-size: rem(14);
+  height: vh(34);
+  line-height: vh(34);
+}
 
 .left-wrapper {
   cursor: pointer;
@@ -804,7 +821,7 @@ onMounted(() => {
       margin-left: vw(15);
       border-top-right-radius: vh(15);
       border-bottom-right-radius: vh(15);
-      font-size: rem(12);
+      font-size: rem(14);
       font-family: Microsoft YaHei-Regular, Microsoft YaHei;
       font-weight: 400;
       color: #FFFFFF;
@@ -829,11 +846,17 @@ onMounted(() => {
       letter-spacing: vw(2);
 
       .typeName {
-        display: flex;
-        align-items: center;
         margin-right: vw(8);
         margin-left: vw(10);
-        font-size: rem(12);
+        font-size: rem(14);
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+
+        span {
+          line-height: vh(14);
+        }
+
       }
 
       ::v-deep(.el-input__wrapper) {
