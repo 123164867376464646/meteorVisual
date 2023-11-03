@@ -801,7 +801,7 @@ onMounted(() => {
       width: vw(30);
       height: vh(30);
       border-radius: 50%;
-      background: white;
+      background: rgba(0,0,0,0.5);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -873,15 +873,15 @@ onMounted(() => {
   }
 
   .item.active .icon-info {
-    background: rgba(47, 128, 237, 1);
+    background: #1373eb;
   }
 
   .item.active .bgColor {
-    background: rgba(47, 128, 237, 0.6);
+    background: #1373eb;
   }
 
   .item.active .bgColor:hover {
-    background: rgba(47, 128, 237, 0.6);
+    background: #1373eb;
   }
 }
 
@@ -903,7 +903,7 @@ onMounted(() => {
     width: vw(50);
     height: vh(50);
     border-radius: 50%;
-    background: #fff;
+    background: rgba(0,0,0,0.5);
     display: flex;
     justify-content: center;
     align-items: center;
