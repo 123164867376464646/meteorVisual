@@ -1,5 +1,30 @@
 <script setup lang="ts">
 import Scene from '@/views/Scene.vue'
+import {onMounted} from 'vue'
+import autofit from 'autofit.js'
+const setRem = () => {
+  const clientWidth = document.documentElement.clientWidth //获取视口宽度
+  const clientHeight = document.documentElement.clientHeight //获取视口高度
+  const pageWidth = clientWidth / clientHeight > 1920 / 1080 ? clientHeight * (1920 / 1080) : clientWidth;
+
+  document.documentElement.style.fontSize = `${pageWidth / 100}px`
+}
+onMounted(() => {
+
+  onMounted(() => {
+    autofit.init(
+        {
+          // dh: 1080,
+          // dw: 1920,
+          el: "#app",
+          resize: true,
+        },
+        false
+    ); // 可关闭控制台运行提示输出
+  });
+  setRem()
+})
+window.addEventListener('resize', setRem);
 </script>
 
 <template>

@@ -1,0 +1,9 @@
+@function vw($n) {
+  @return calc($n / 1920)*100vw
+}
+@function vh($n) {
+  @return calc($n / 1080)*100vh
+}
+@function rem($n) {
+  @return calc($n / 1920)*100rem
+}
