@@ -769,10 +769,10 @@ onMounted(() => {
 .left-wrapper {
   cursor: pointer;
   z-index: 999;
-  height: vh(350);
+  height: 350px;
   position: absolute;
-  top: vh(285);
-  left: vw(40);
+  top: 285px;
+  left: 40px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -781,8 +781,8 @@ onMounted(() => {
     pointer-events: all;
 
     .icon-info {
-      width: vw(30);
-      height: vh(30);
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       background: white;
       display: flex;
@@ -790,55 +790,55 @@ onMounted(() => {
       align-items: center;
       position: relative;
       z-index: 2;
-      box-shadow: vh(3) 0 vh(5) vw(-3) rgba(0, 0, 0, .25);
+      box-shadow: 3px 0 5px 3px rgba(0, 0, 0, .25);
     }
 
     .bgColor {
       position: relative;
       z-index: 1;
-      width: vw(90);
-      height: vh(30);
-      text-shadow: vh(1) vw(1) vh(3) rgba(0, 0, 0, .4);
+      width: 90px;
+      height: 30px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, .4);
       background: rgba(0, 0, 0, 0.5);
-      margin-top: vh(-30);
-      margin-left: vw(15);
-      border-top-right-radius: vh(15);
-      border-bottom-right-radius: vh(15);
-      font-size: rem(12);
+      margin-top: -30px;
+      margin-left: 15px;
+      border-top-right-radius: 15px;
+      border-bottom-right-radius: 15px;
+      font-size: 12px;
       font-family: Microsoft YaHei-Regular, Microsoft YaHei;
       font-weight: 400;
       color: #FFFFFF;
-      line-height: vh(14);
-      letter-spacing: vw(1);
+      line-height: 14px;
+      letter-spacing: 1px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
     .selectOptions {
-      width: vw(192);
-      height: vh(22);
+      width: 192px;
+      height: 22px;
       background: rgba(0, 0, 0, 0.5);
-      border-radius: vw(10);
-      margin-top: vh(10);
+      border-radius: 10px;
+      margin-top: 10px;
       display: flex;
-      font-size: rem(12);
+      font-size: 12px;
       font-family: Microsoft YaHei-Regular, Microsoft YaHei;
       font-weight: 400;
       color: #FFFFFF;
-      letter-spacing: vw(2);
+      letter-spacing: 2px;
 
       .typeName {
         display: flex;
         align-items: center;
-        margin-right: vw(8);
-        margin-left: vw(10);
-        font-size: rem(12);
+        margin-right: 8px;
+        margin-left: 10px;
+        font-size: 12px;
       }
 
       ::v-deep(.el-input__wrapper) {
         background: #0000;
-        width: vw(140);
+        width: 140px;
         box-shadow: none;
       }
 
@@ -867,18 +867,18 @@ onMounted(() => {
   cursor: pointer;
   z-index: 999;
   position: absolute;
-  top: vh(90);
-  right: vw(40);
-  width: vw(50);
-  height: vh(332);
+  top: 90px;
+  right: 40px;
+  width: 50px;
+  height: 332px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
   .item-wrapper {
     pointer-events: all;
-    width: vw(50);
-    height: vh(50);
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background: #fff;
     display: flex;
@@ -886,8 +886,8 @@ onMounted(() => {
     align-items: center;
 
     .img {
-      width: vw(20);
-      height: vh(20);
+      width: 20px;
+      height: 20px;
     }
   }
 }
@@ -897,71 +897,71 @@ onMounted(() => {
   pointer-events: all;
   z-index: 999;
   position: absolute;
-  left: vw(40);
-  bottom: vh(40);
+  left: 40px;
+  bottom: 40px;
   display: flex;
   align-items: center;
 
   .playButton {
-    width: vw(97);
-    height: vh(50);
+    width: 97px;
+    height: 50px;
     background: #fff;
-    border-radius: vw(25);
+    border-radius: 25px;
     display: flex;
     align-items: center;
-    margin-right: vw(91);
+    margin-right: 91px;
 
     .img {
-      width: vw(16);
-      height: vh(20);
-      margin-left: vw(21);
-      margin-right: vw(12);
+      width: 16px;
+      height: 20px;
+      margin-left: 21px;
+      margin-right: 12px;
     }
 
     .text {
-      font-size: rem(12);
+      font-size: 12px;
       font-family: Microsoft YaHei-Regular, Microsoft YaHei;
       font-weight: 400;
       color: #2F80ED;
-      line-height: vh(14);
-      letter-spacing: vw(1);
+      line-height: 14px;
+      letter-spacing: 1px;
     }
   }
 
   .backButton {
-    width: vw(50);
-    height: vh(50);
+    width: 50px;
+    height: 50px;
     background: #fff;
-    border-radius: vw(25);
+    border-radius: 25px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: vw(50);
+    margin-right: 50px;
 
     .img {
-      width: vw(13);
-      height: vh(20);
+      width: 13px;
+      height: 20px;
     }
   }
 
   .progressBar {
-    width: vw(1266);
-    height: vh(20);
-    margin-right: vw(50);
+    width: 1266px;
+    height: 20px;
+    margin-right: 50px;
     display: flex;
     align-items: center;
 
     .dateBg {
-      width: vw(170);
-      height: vh(20);
+      width: 170px;
+      height: 20px;
       background: #fff;
-      border-radius: vw(10);
+      border-radius: 10px;
       display: flex;
       align-items: center;
 
       ::v-deep(.el-input__wrapper) {
         background: #0000;
-        width: vw(170);
+        width: 170px;
         box-shadow: none;
       }
 
@@ -969,7 +969,7 @@ onMounted(() => {
     }
 
     .axis {
-      height: vh(80);
+      height: 80px;
       display: inline-block;
       /*border: 1px solid red;*/
       flex: 1;
@@ -978,31 +978,31 @@ onMounted(() => {
   }
 
   .gotoButton {
-    width: vw(50);
-    height: vh(50);
+    width: 50px;
+    height: 50px;
     background: #fff;
-    border-radius: vw(25);
+    border-radius: 25px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: vw(50);
+    margin-right: 50px;
 
     .img {
-      width: vw(13);
-      height: vh(20);
+      width: 13px;
+      height: 20px;
     }
   }
 
   .settingButton {
-    width: vw(101);
-    height: vh(30);
+    width: 101px;
+    height: 30px;
     background: rgba(0, 0, 0, 0.5);
-    border-radius: vw(15);
+    border-radius: 15px;
     text-align: center;
 
     ::v-deep(.el-input__wrapper) {
       background: #0000;
-      width: vw(80);
+      width: 80px;
       box-shadow: none;
     }
   }
