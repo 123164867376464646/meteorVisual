@@ -16,6 +16,7 @@ import humidity1 from "@/assets/png/whiteIcon/Vector@2x(2).png"
 import visibility0 from "@/assets/png/Vector@2x(3).png"
 import visibility1 from "@/assets/png/whiteIcon/Vector@2x(3).png"
 import IconDropDown from "@/components/IconDropDown.vue";
+import IconTime from "@/components/IconTime.vue";
 
 
 // onMounted(() => {
@@ -389,7 +390,7 @@ onMounted(() => {
   {
     /*高德*/
     /*默认地图*/
-    // L.tileLayer.chinaProvider('Geoq.Normal.Gray', {maxZoom: 18, minZoom: 3, subtitle: 'TianDiTu'}).addTo(map);
+    L.tileLayer.chinaProvider('Geoq.Normal.Gray', {maxZoom: 18, minZoom: 3, subtitle: 'TianDiTu'}).addTo(map);
 
     /*卫星地图*/
     // L.tileLayer.chinaProvider('GaoDe.Satellite.Map', {maxZoom: 18, minZoom: 3, subtitle: '高德'}).addTo(map);
@@ -397,12 +398,12 @@ onMounted(() => {
 
 
     /* 黑色map */
-    let url = 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png';
-    L.tileLayer(url, {
-      attribution: 'OSM & Carto',
-      subdomains: 'abcd',
-      maxZoom: 19
-    }).addTo(map);
+    // let url = 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png';
+    // L.tileLayer(url, {
+    //   attribution: 'OSM & Carto',
+    //   subdomains: 'abcd',
+    //   maxZoom: 19
+    // }).addTo(map);
   }
 
   {
@@ -468,16 +469,17 @@ const date = ref(new Date())
 
 
 let selectedTime = ref()
-onMounted(() => {
-  // value.value = optionsList.value[0].childrenOptionsList[1].value
 
-  // 定义时间范围
+
+function createSVGChart() {// 定义时间范围
   const startDate = new Date('2020-01-01');
   const endDate = new Date('2020-01-02');
 
 
   //获取svg
   const svg = d3.select('.axis')
+  // .attr('preserveAspectRatio', 'xMidYMid meet')
+  // .attr('viewBox', '0 0 400 400')
   // 获取svg宽度
   const svgWidth = svg.node().getBoundingClientRect().width;
 
@@ -516,7 +518,7 @@ onMounted(() => {
 // 添加黑色背景
   svg.insert('rect', ':first-child')
       .attr('x', 0)
-      .attr('y', 33.5)
+      .attr('y', 34.5)
       .attr('width', svgWidth)
       .attr('height', 10)
       .style('fill', 'rgba(0,0,0,0.333)')
@@ -525,7 +527,7 @@ onMounted(() => {
 //添加进度条
   const progress = svg.append('rect')
       .attr('x', xScale(startDate))
-      .attr('y', 35.5)
+      .attr('y', 36.5)
       .attr('width', 0)
       .attr('height', 6)
       .style('fill', '#2F80ED')
@@ -535,14 +537,14 @@ onMounted(() => {
       .attr('x1', 0)
       .attr('y1', 25)
       .attr('x2', 0)
-      .attr('y2', 33.5)
+      .attr('y2', 34.5)
       .style('stroke', 'rgba(0,0,0,0.333)')
       .style('stroke-width', 2)
       .style('opacity', 0);
   // 添加圆点
   const circle = svg.append('circle')
       .attr('cx', xScale(startDate))
-      .attr('cy', 38)
+      .attr('cy', 40)
       .attr('r', 8)
       .style('fill', 'white')
       .style('cursor', 'e-resize')
@@ -628,14 +630,18 @@ onMounted(() => {
     // 隐藏刻度线
     tooltipTick.style('opacity', 0);
   });
+}
 
-
+onMounted(() => {
+  // value.value = optionsList.value[0].childrenOptionsList[1].value
+  createSVGChart()
+})
 // 模拟数据
-  const data = [
-    {time: new Date('2020-01-01 12:00'), value: 10},
-    {time: new Date('2020-01-01 18:00'), value: 20},
-    //...
-  ];
+const data222 = [
+  {time: new Date('2020-01-01 12:00'), value: 10},
+  {time: new Date('2020-01-01 18:00'), value: 20},
+  //...
+];
 
 // 点击回调函数
 //   function onclick(d) {
@@ -666,7 +672,6 @@ onMounted(() => {
 //     svg.selectAll('.tick')
 //         .attr('font-weight', d => d > selectedTime.value ? 'bold' : 'normal');
 //   }
-})
 </script>
 
 <template>
@@ -681,7 +686,7 @@ onMounted(() => {
              :src="item.id ===selectedID?item.icon1:item.icon0" alt="">
       </div>
       <div class="bgColor">
-        {{ item.name }}
+        <span>{{ item.name }}</span>
       </div>
       <div class="selectOptions" v-show="item.id ===selectedID&&item.childrenOptionsList">
         <div class="typeName"><span>{{ item.typeName }}:</span></div>
@@ -716,20 +721,22 @@ onMounted(() => {
       <img class="img" src="@/assets/png/Vector@2x(5).png" alt="">
     </div>
     <div class="progressBar">
-      <div class="dateBg">
+      <div id="dateBg" class="dateBg">
         <el-date-picker
             v-model="date"
             type="date"
-            placeholder="Pick a date"
-            :default-value="new Date()"
+            placeholder="请选择日期"
+            :suffix-icon="IconTime"
         />
       </div>
-      <svg class="axis"></svg>
+      <div class="svg_container">
+        <svg class="axis"></svg>
+      </div>
     </div>
     <div class="gotoButton">
       <img class="img" src="@/assets/png/Vector@2x(6).png" alt="">
     </div>
-    <div class="settingButton">
+    <div id="settingButton" class="settingButton">
       <el-select v-model="value" class="m-2" placeholder="数值" placement="top" :suffix-icon="IconDropDown">
         <el-option
             v-for="item in [{value:'正常',label:'正常'},{value:'强',label:'强'},{value:'薄',label:'薄'},{value:'弱',label:'弱'},]"
@@ -760,10 +767,6 @@ onMounted(() => {
   box-shadow: 0 0 0 0 var(--el-input-hover-border-color) inset !important;
 }
 
-::v-deep(.el-input__inner) {
-  color: white;
-}
-
 ::v-deep(input::-webkit-input-placeholder,input:-moz-placeholder,input:-ms-input-placeholder) {
   color: white;
   font-size: rem(12);
@@ -774,10 +777,12 @@ onMounted(() => {
   height: vh(24);
   font-size: rem(12);
 }
-:deep(.el-input__suffix){
+
+:deep(.el-input__suffix) {
   transform: translateX(vw(-10));
 }
-.el-select-dropdown__item{
+
+.el-select-dropdown__item {
   font-size: rem(14);
   height: vh(34);
   line-height: vh(34);
@@ -801,7 +806,7 @@ onMounted(() => {
       width: vw(30);
       height: vh(30);
       border-radius: 50%;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0, 0, 0, 0.5);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -813,14 +818,12 @@ onMounted(() => {
     .bgColor {
       position: relative;
       z-index: 1;
-      width: vw(90);
+      width: vw(105);
       height: vh(30);
       text-shadow: vh(1) vw(1) vh(3) rgba(0, 0, 0, .4);
       background: rgba(0, 0, 0, 0.5);
       margin-top: vh(-30);
-      margin-left: vw(15);
-      border-top-right-radius: vh(15);
-      border-bottom-right-radius: vh(15);
+      border-radius: vh(15);
       font-size: rem(14);
       font-family: Microsoft YaHei-Regular, Microsoft YaHei;
       font-weight: 400;
@@ -830,6 +833,10 @@ onMounted(() => {
       display: flex;
       justify-content: center;
       align-items: center;
+
+      span {
+        margin-left: vw(15);
+      }
     }
 
     .selectOptions {
@@ -877,11 +884,7 @@ onMounted(() => {
   }
 
   .item.active .bgColor {
-    background: #1373eb;
-  }
-
-  .item.active .bgColor:hover {
-    background: #1373eb;
+    background: rgba(19, 115, 235, 0.6);
   }
 }
 
@@ -903,7 +906,7 @@ onMounted(() => {
     width: vw(50);
     height: vh(50);
     border-radius: 50%;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -916,6 +919,7 @@ onMounted(() => {
 }
 
 .bottom-wrapper {
+  width: vw(1840);
   cursor: pointer;
   pointer-events: all;
   z-index: 999;
@@ -923,16 +927,17 @@ onMounted(() => {
   left: vw(40);
   bottom: vh(40);
   display: flex;
+  justify-content: space-between;
   align-items: center;
 
   .playButton {
     width: vw(97);
     height: vh(50);
-    background: #fff;
+    background: rgba(0, 0, 0, 0.5);
     border-radius: vw(25);
     display: flex;
     align-items: center;
-    margin-right: vw(91);
+    //margin-right: vw(91);
 
     .img {
       width: vw(16);
@@ -954,12 +959,12 @@ onMounted(() => {
   .backButton {
     width: vw(50);
     height: vh(50);
-    background: #fff;
+    background: rgba(0, 0, 0, 0.5);
     border-radius: vw(25);
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: vw(50);
+    //margin-right: vw(50);
 
     .img {
       width: vw(13);
@@ -970,14 +975,14 @@ onMounted(() => {
   .progressBar {
     width: vw(1266);
     height: vh(20);
-    margin-right: vw(50);
+    //margin-right: vw(50);
     display: flex;
     align-items: center;
 
     .dateBg {
       width: vw(170);
       height: vh(20);
-      background: #fff;
+      background: rgba(0, 0, 0, 0.5);
       border-radius: vw(10);
       display: flex;
       align-items: center;
@@ -991,24 +996,28 @@ onMounted(() => {
       //margin-right: 20px;
     }
 
-    .axis {
+    .svg_container {
       height: vh(80);
       display: inline-block;
-      /*border: 1px solid red;*/
+      border: 1px solid red;
       flex: 1;
       /*background: blue;*/
+      .axis {
+        width: 100%;
+        height: 100%;
+      }
     }
   }
 
   .gotoButton {
     width: vw(50);
     height: vh(50);
-    background: #fff;
+    background: rgba(0, 0, 0, 0.5);
     border-radius: vw(25);
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: vw(50);
+    //margin-right: vw(50);
 
     .img {
       width: vw(13);
@@ -1021,12 +1030,14 @@ onMounted(() => {
     height: vh(30);
     background: rgba(0, 0, 0, 0.5);
     border-radius: vw(15);
-    text-align: center;
+    display: flex;
+    align-items: center;
 
     ::v-deep(.el-input__wrapper) {
       background: #0000;
-      width: vw(80);
+      width: vw(110);
       box-shadow: none;
+
     }
   }
 
@@ -1035,4 +1046,20 @@ onMounted(() => {
   }
 }
 
+
+</style>
+<style lang="scss">
+#settingButton {
+  .el-input__inner {
+    text-align: center;
+  }
+}
+
+#dateBg {
+  .el-input__inner {
+    text-align: center;
+    color: white;
+    font-size: rem(12);
+  }
+}
 </style>
