@@ -17,6 +17,14 @@ import visibility0 from "@/assets/png/Vector@2x(3).png"
 import visibility1 from "@/assets/png/whiteIcon/Vector@2x(3).png"
 import IconDropDown from "@/components/IconDropDown.vue";
 import IconTime from "@/components/IconTime.vue";
+import dataR0 from "@/assets/png/datar.png";
+import dataR1 from "@/assets/png/whiteIcon/dataR.png";
+import qiehuan0 from "@/assets/png/qiehuan0.png";
+import qiehuan1 from "@/assets/png/whiteIcon/qiehuan1.png";
+import daqiya0 from "@/assets/png/大气压力.png";
+import daqiya1 from "@/assets/png/whiteIcon/大气压力.png";
+import zhenfeng0 from "@/assets/png/阵风.png";
+import zhenfeng1 from "@/assets/png/whiteIcon/阵风.png";
 
 
 // onMounted(() => {
@@ -110,12 +118,216 @@ const controlList = [
 const optionsList = ref([
   {
     id: 0,
+    name: '多源设备数据融合',
+    icon0: dataR0,
+    icon1: dataR1,
+    iconW: VW(20),
+    iconH: VH(20),
+    typeName: '',
+    value: '',
+    defaultOption: 'X波段天气雷达',
+    childrenOptionsList: [
+      {
+        value: 'X波段天气雷达',
+        label: 'X波段天气雷达',
+      },
+      {
+        value: 'S波段天气雷达',
+        label: 'S波段天气雷达',
+      },
+      {
+        value: '边界层风廊线雷达',
+        label: '边界层风廊线雷达',
+      },
+      {
+        value: '对流层风廓线雷达',
+        label: '对流层风廓线雷达',
+      },
+      {
+        value: '毫米波云雷达',
+        label: '毫米波云雷达',
+      },
+      {
+        value: '毫米波测风雷达',
+        label: '毫米波测风雷达',
+      },
+      {
+        value: '激光测风雷达',
+        label: '激光测风雷达',
+      },
+      {
+        value: '自动气象站',
+        label: '自动气象站',
+      },
+      {
+        value: '风云四号卫星',
+        label: '风云四号卫星',
+      },
+      {
+        value: '葵花八号卫星',
+        label: '葵花八号卫星',
+      },
+      {
+        value: '探空',
+        label: '探空',
+      },
+      {
+        value: '机载X波段气象雷达',
+        label: '机载X波段气象雷达',
+      },
+      {
+        value: '机载Ka波段气象雷达',
+        label: '机载Ka波段气象雷达',
+      },
+    ],
+    fn: () => {
+      // console.log('0')
+    }
+  },
+  {
+    id: 1,
+    name: '预报技术',
+    icon0: qiehuan0,
+    icon1: qiehuan1,
+    iconW: VW(20),
+    iconH: VH(20),
+    typeName: '',
+    value: '',
+    defaultOption: '',
+    childrenOptionsList: [
+      {
+        value: '数值模式',
+        label: '数值模式',
+      },
+      {
+        value: '人工智能',
+        label: '人工智能',
+      },
+    ],
+    fn: () => {
+      // console.log('0')
+    }
+  },
+  {
+    id: 2, name: '风速', icon0: windSpeed0, icon1: windSpeed1, iconW: VW(15), iconH: VH(14),
+    typeName: '高度：',
+    value: '',
+    childrenOptionsList: [
+      {
+        value: '地上10米',
+        label: '地上10米',
+      },
+      {
+        value: '地上100米',
+        label: '地上100米',
+      },
+      {
+        value: '地上250米',
+        label: '地上250米',
+      },
+      {
+        value: '950百帕，500米',
+        label: '950百帕，500米',
+      },
+      {
+        value: '925百帕，750米',
+        label: '925百帕，750米',
+      },
+      {
+        value: '900百帕，1000米',
+        label: '900百帕，1000米',
+      },
+      {
+        value: '850百帕，1500米',
+        label: '850百帕，1500米',
+      },
+      {
+        value: '800百帕，2000米',
+        label: '800百帕，2000米',
+      },
+      {
+        value: '750百帕，2500米',
+        label: '750百帕，2500米',
+      },
+      {
+        value: '700百帕，3000米',
+        label: '700百帕，3000米',
+      },
+      {
+        value: '650百帕，3600米',
+        label: '650百帕，3600米',
+      },
+      {
+        value: '600百帕，4200米',
+        label: '600百帕，4200米',
+      },
+      {
+        value: '500百帕，5500米',
+        label: '500百帕，5500米',
+      },
+      {
+        value: '300百帕，9000米',
+        label: '300百帕，9000米',
+      },
+      {
+        value: '200百帕，12000米',
+        label: '200百帕，12000米',
+      },
+      {
+        value: '10 hPa, 30000 m',
+        label: '10 hPa, 30000 m',
+      },
+    ], fn: () => {
+      // console.log('2')
+    }
+  },
+  {
+    id: 3,
+    name: '阵风',
+    icon0: zhenfeng0,
+    icon1: zhenfeng1,
+    iconW: VW(20),
+    iconH: VH(20),
+    typeName: '',
+    value: '',
+    defaultOption: '',
+    childrenOptionsList: [
+      {
+        value: '每小时',
+        label: '每小时',
+      },
+      {
+        value: '开始于10-10 02:00',
+        label: '开始于10-10 02:00',
+      },
+    ],
+    fn: () => {
+      // console.log('0')
+    }
+  },
+  {
+    id: 4,
+    name: '气压',
+    icon0: daqiya0,
+    icon1: daqiya1,
+    iconW: VW(20),
+    iconH: VH(20),
+    typeName: '',
+    value: '',
+    defaultOption: '',
+    childrenOptionsList: null,
+    fn: () => {
+      // console.log('0')
+    }
+  },
+  {
+    id: 5,
     name: '温度',
     icon0: temperature0,
     icon1: temperature1,
     iconW: VW(8),
     iconH: VH(16),
-    typeName: '高度',
+    typeName: '高度：',
     value: '',
     defaultOption: '',
     childrenOptionsList: [
@@ -197,106 +409,8 @@ const optionsList = ref([
     }
   },
   {
-    id: 1, name: '降水量', icon0: precipitation0, icon1: precipitation1, iconW: VW(10), iconH: VH(14.5),
-    typeName: '累积',
-    value: '',
-    childrenOptionsList: [
-      {
-        value: '每小时',
-        label: '每小时',
-      },
-      {
-        value: '每3个小时',
-        label: '每3个小时',
-      },
-      {
-        value: '开始于10-10 08:00',
-        label: '开始于10-10 08:00',
-      },
-      {
-        value: '每月异常',
-        label: '每月异常',
-      },
-    ], fn: () => {
-      console.log('1')
-    }
-  },
-  {
-    id: 2, name: '风速', icon0: windSpeed0, icon1: windSpeed1, iconW: VW(15), iconH: VH(14),
-    typeName: '高度',
-    value: '',
-    childrenOptionsList: [
-      {
-        value: '地上10米',
-        label: '地上10米',
-      },
-      {
-        value: '地上100米',
-        label: '地上100米',
-      },
-      {
-        value: '地上250米',
-        label: '地上250米',
-      },
-      {
-        value: '950百帕，500米',
-        label: '950百帕，500米',
-      },
-      {
-        value: '925百帕，750米',
-        label: '925百帕，750米',
-      },
-      {
-        value: '900百帕，1000米',
-        label: '900百帕，1000米',
-      },
-      {
-        value: '850百帕，1500米',
-        label: '850百帕，1500米',
-      },
-      {
-        value: '800百帕，2000米',
-        label: '800百帕，2000米',
-      },
-      {
-        value: '750百帕，2500米',
-        label: '750百帕，2500米',
-      },
-      {
-        value: '700百帕，3000米',
-        label: '700百帕，3000米',
-      },
-      {
-        value: '650百帕，3600米',
-        label: '650百帕，3600米',
-      },
-      {
-        value: '600百帕，4200米',
-        label: '600百帕，4200米',
-      },
-      {
-        value: '500百帕，5500米',
-        label: '500百帕，5500米',
-      },
-      {
-        value: '300百帕，9000米',
-        label: '300百帕，9000米',
-      },
-      {
-        value: '200百帕，12000米',
-        label: '200百帕，12000米',
-      },
-      {
-        value: '10 hPa, 30000 m',
-        label: '10 hPa, 30000 m',
-      },
-    ], fn: () => {
-      console.log('2')
-    }
-  },
-  {
-    id: 3, name: '湿度', icon0: humidity0, icon1: humidity1, iconW: VW(14.5), iconH: VH(15),
-    typeName: '湿度',
+    id: 6, name: '湿度', icon0: humidity0, icon1: humidity1, iconW: VW(14.5), iconH: VH(15),
+    typeName: '湿度：',
     value: '',
     childrenOptionsList: [
       {
@@ -324,8 +438,33 @@ const optionsList = ref([
     }
   },
   {
-    id: 4, name: '能见度', icon0: visibility0, icon1: visibility1, iconW: VW(15.5), iconH: VH(9),
-    typeName: '范围',
+    id: 7, name: '降水量', icon0: precipitation0, icon1: precipitation1, iconW: VW(10), iconH: VH(14.5),
+    typeName: '累积：',
+    value: '',
+    childrenOptionsList: [
+      {
+        value: '每小时',
+        label: '每小时',
+      },
+      {
+        value: '每3个小时',
+        label: '每3个小时',
+      },
+      {
+        value: '开始于10-10 08:00',
+        label: '开始于10-10 08:00',
+      },
+      {
+        value: '每月异常',
+        label: '每月异常',
+      },
+    ], fn: () => {
+      console.log('1')
+    }
+  },
+  {
+    id: 8, name: '能见度', icon0: visibility0, icon1: visibility1, iconW: VW(15.5), iconH: VH(9),
+    typeName: '范围：',
     value: '',
     // childrenOptionsList: [
     //   {
@@ -681,15 +820,17 @@ const data222 = [
     <div class="item" :class="{ active: item.id ===selectedID  }" @click="selected(item.id);item.fn()"
          v-for="item in optionsList"
          :key="item.id">
-      <div class="icon-info">
-        <img class="img" :style="{'width':item.iconW,'height':item.iconH}"
-             :src="item.id ===selectedID?item.icon1:item.icon0" alt="">
-      </div>
-      <div class="bgColor">
-        <span>{{ item.name }}</span>
+      <div class="item_layout">
+        <div class="icon-info">
+          <img class="img" :style="{'width':item.iconW,'height':item.iconH}"
+               :src="item.id ===selectedID?item.icon1:item.icon0" alt="">
+        </div>
+        <div class="bgColor">
+          <span>{{ item.name }}</span>
+        </div>
       </div>
       <div class="selectOptions" v-show="item.id ===selectedID&&item.childrenOptionsList">
-        <div class="typeName"><span>{{ item.typeName }}:</span></div>
+        <div class="typeName"><span>{{ item.typeName }}</span></div>
         <el-select v-model="item.value" :placeholder="item.childrenOptionsList&&item.childrenOptionsList[0].value"
                    size="small" :suffix-icon="IconDropDown"
         >
@@ -791,7 +932,7 @@ const data222 = [
 .left-wrapper {
   cursor: pointer;
   z-index: 999;
-  height: vh(350);
+  height: vh(500);
   position: absolute;
   top: vh(285);
   left: vw(40);
@@ -802,43 +943,48 @@ const data222 = [
   .item {
     pointer-events: all;
 
-    .icon-info {
-      width: vw(30);
-      height: vh(30);
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .item_layout{
       position: relative;
-      z-index: 2;
-      box-shadow: vh(3) 0 vh(5) vw(-3) rgba(0, 0, 0, .25);
-    }
-
-    .bgColor {
-      position: relative;
-      z-index: 1;
-      width: vw(105);
-      height: vh(30);
-      text-shadow: vh(1) vw(1) vh(3) rgba(0, 0, 0, .4);
-      background: rgba(0, 0, 0, 0.5);
-      margin-top: vh(-30);
-      border-radius: vh(15);
-      font-size: rem(14);
-      font-family: Microsoft YaHei-Regular, Microsoft YaHei;
-      font-weight: 400;
-      color: #FFFFFF;
-      line-height: vh(14);
-      letter-spacing: vw(1);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      span {
-        margin-left: vw(15);
+      .icon-info {
+        position: absolute;
+        width: vw(30);
+        height: vh(30);
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        //position: relative;
+        //z-index: 2;
+        box-shadow: vh(3) 0 vh(5) vw(-3) rgba(0, 0, 0, .25);
       }
-    }
 
+      .bgColor {
+        //position: relative;
+        //z-index: 1;
+        //width: vw(105);
+        //height: vh(30);
+        text-shadow: vh(1) vw(1) vh(3) rgba(0, 0, 0, .4);
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: vh(15);
+        font-size: rem(14);
+        font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+        font-weight: 400;
+        color: #FFFFFF;
+        line-height: vh(14);
+        letter-spacing: vw(1);
+        //display: flex;
+        //justify-content: center;
+        //align-items: center;
+        display: inline-block;
+        padding: vh(8) vw(20) vh(8) vw(50);
+
+        span {
+          white-space: nowrap;
+        }
+      }
+
+    }
     .selectOptions {
       width: vw(192);
       height: vh(22);
