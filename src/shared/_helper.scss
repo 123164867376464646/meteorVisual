@@ -1,9 +1,30 @@
+//@function vw($n) {
+//  @return calc($n / 1920)*100vw
+//}
+//@function vh($n) {
+//  @return calc($n / 1080)*100vh
+//}
+//@function rem($n) {
+//  @return calc($n / 1920)*100rem
+//}
+
 @function vw($n) {
-  @return calc($n / 1920)*100vw
+  @return calc($n / 16 * 1em)
 }
+
 @function vh($n) {
-  @return calc($n / 1080)*100vh
+  @return calc($n / 16 * 1em)
 }
+
 @function rem($n) {
-  @return calc($n / 1920)*100rem
+  @return calc($n / 16 * 1em)
 }
+
+
+//@function vh($n) {
+//  @return calc($n * 1px)
+//}
+//
+//@function rem($n) {
+//  @return calc($n * 1px)
+//}

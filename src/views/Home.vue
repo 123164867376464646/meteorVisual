@@ -99,11 +99,18 @@ import zhenfeng1 from "@/assets/png/whiteIcon/阵风.png";
 // })
 let map = ref(null)
 
+// const VW = (w) => {
+//   return (w / 1920) * 100 + 'vw'
+// }
+// const VH = (h) => {
+//   return (h / 1080) * 100 + 'vh'
+// }
+
 const VW = (w) => {
-  return (w / 1920) * 100 + 'vw'
+  return  (w/16)+'em'
 }
 const VH = (h) => {
-  return (h / 1080) * 100 + 'vh'
+  return  (h/16)+'em'
 }
 
 const controlList = [
@@ -934,11 +941,14 @@ const data222 = [
   z-index: 999;
   height: vh(500);
   position: absolute;
-  top: vh(285);
+  //top: vh(285);
+  top: 50vh;
+  transform: translateY(-50%);
   left: vw(40);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  font-size: 100%;
 
   .item {
     pointer-events: all;
@@ -967,7 +977,6 @@ const data222 = [
         text-shadow: vh(1) vw(1) vh(3) rgba(0, 0, 0, .4);
         background: rgba(0, 0, 0, 0.5);
         border-radius: vh(15);
-        font-size: rem(14);
         font-family: Microsoft YaHei-Regular, Microsoft YaHei;
         font-weight: 400;
         color: #FFFFFF;
@@ -1065,7 +1074,8 @@ const data222 = [
 }
 
 .bottom-wrapper {
-  width: vw(1840);
+  //width: vw(1840);
+  width: 95.8333333333vw;
   cursor: pointer;
   pointer-events: all;
   z-index: 999;
@@ -1073,17 +1083,18 @@ const data222 = [
   left: vw(40);
   bottom: vh(40);
   display: flex;
-  justify-content: space-between;
+  //justify-content: space-between;
   align-items: center;
 
   .playButton {
+    flex: none;
     width: vw(97);
     height: vh(50);
     background: rgba(0, 0, 0, 0.5);
     border-radius: vw(25);
     display: flex;
     align-items: center;
-    //margin-right: vw(91);
+    margin-right: vw(69);
 
     .img {
       width: vw(16);
@@ -1103,6 +1114,7 @@ const data222 = [
   }
 
   .backButton {
+    flex: none;
     width: vw(50);
     height: vh(50);
     background: rgba(0, 0, 0, 0.5);
@@ -1110,7 +1122,7 @@ const data222 = [
     display: flex;
     justify-content: center;
     align-items: center;
-    //margin-right: vw(50);
+    margin-right: vw(69);
 
     .img {
       width: vw(13);
@@ -1119,9 +1131,10 @@ const data222 = [
   }
 
   .progressBar {
+    flex: 1;
     width: vw(1266);
     height: vh(20);
-    //margin-right: vw(50);
+    margin-right: vw(69);
     display: flex;
     align-items: center;
 
@@ -1145,7 +1158,7 @@ const data222 = [
     .svg_container {
       height: vh(80);
       display: inline-block;
-      border: 1px solid red;
+      //border: 1px solid red;
       flex: 1;
       /*background: blue;*/
       .axis {
@@ -1156,6 +1169,7 @@ const data222 = [
   }
 
   .gotoButton {
+    flex: none;
     width: vw(50);
     height: vh(50);
     background: rgba(0, 0, 0, 0.5);
@@ -1163,7 +1177,7 @@ const data222 = [
     display: flex;
     justify-content: center;
     align-items: center;
-    //margin-right: vw(50);
+    margin-right: vw(69);
 
     .img {
       width: vw(13);
@@ -1172,6 +1186,7 @@ const data222 = [
   }
 
   .settingButton {
+    flex: none;
     width: vw(101);
     height: vh(30);
     background: rgba(0, 0, 0, 0.5);
@@ -1198,10 +1213,19 @@ const data222 = [
 #settingButton {
   .el-input__inner {
     text-align: center;
+    color: white;
+    font-size: rem(12);
   }
 }
 
 #dateBg {
+  .el-input__inner {
+    text-align: center;
+    color: white;
+    font-size: rem(12);
+  }
+}
+.selectOptions{
   .el-input__inner {
     text-align: center;
     color: white;
