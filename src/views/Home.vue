@@ -15,6 +15,17 @@ import humidity0 from "@/assets/png/Vector@2x(2).png"
 import humidity1 from "@/assets/png/whiteIcon/Vector@2x(2).png"
 import visibility0 from "@/assets/png/Vector@2x(3).png"
 import visibility1 from "@/assets/png/whiteIcon/Vector@2x(3).png"
+import IconDropDown from "@/components/IconDropDown.vue";
+import IconTime from "@/components/IconTime.vue";
+import dataR0 from "@/assets/png/datar.png";
+import dataR1 from "@/assets/png/whiteIcon/dataR.png";
+import qiehuan0 from "@/assets/png/qiehuan0.png";
+import qiehuan1 from "@/assets/png/whiteIcon/qiehuan1.png";
+import daqiya0 from "@/assets/png/大气压力.png";
+import daqiya1 from "@/assets/png/whiteIcon/大气压力.png";
+import zhenfeng0 from "@/assets/png/阵风.png";
+import zhenfeng1 from "@/assets/png/whiteIcon/阵风.png";
+
 
 // onMounted(() => {
 //   const map = L.map('map').setView([29.566887749040042, 106.54472351074219], 13);//{lat: 29.566887749040042, lng: 106.54472351074219}
@@ -107,12 +118,216 @@ const controlList = [
 const optionsList = ref([
   {
     id: 0,
+    name: '多源设备数据融合',
+    icon0: dataR0,
+    icon1: dataR1,
+    iconW: VW(20),
+    iconH: VH(20),
+    typeName: '',
+    value: '',
+    defaultOption: 'X波段天气雷达',
+    childrenOptionsList: [
+      {
+        value: 'X波段天气雷达',
+        label: 'X波段天气雷达',
+      },
+      {
+        value: 'S波段天气雷达',
+        label: 'S波段天气雷达',
+      },
+      {
+        value: '边界层风廊线雷达',
+        label: '边界层风廊线雷达',
+      },
+      {
+        value: '对流层风廓线雷达',
+        label: '对流层风廓线雷达',
+      },
+      {
+        value: '毫米波云雷达',
+        label: '毫米波云雷达',
+      },
+      {
+        value: '毫米波测风雷达',
+        label: '毫米波测风雷达',
+      },
+      {
+        value: '激光测风雷达',
+        label: '激光测风雷达',
+      },
+      {
+        value: '自动气象站',
+        label: '自动气象站',
+      },
+      {
+        value: '风云四号卫星',
+        label: '风云四号卫星',
+      },
+      {
+        value: '葵花八号卫星',
+        label: '葵花八号卫星',
+      },
+      {
+        value: '探空',
+        label: '探空',
+      },
+      {
+        value: '机载X波段气象雷达',
+        label: '机载X波段气象雷达',
+      },
+      {
+        value: '机载Ka波段气象雷达',
+        label: '机载Ka波段气象雷达',
+      },
+    ],
+    fn: () => {
+      // console.log('0')
+    }
+  },
+  {
+    id: 1,
+    name: '预报技术',
+    icon0: qiehuan0,
+    icon1: qiehuan1,
+    iconW: VW(20),
+    iconH: VH(20),
+    typeName: '',
+    value: '',
+    defaultOption: '',
+    childrenOptionsList: [
+      {
+        value: '数值模式',
+        label: '数值模式',
+      },
+      {
+        value: '人工智能',
+        label: '人工智能',
+      },
+    ],
+    fn: () => {
+      // console.log('0')
+    }
+  },
+  {
+    id: 2, name: '风速', icon0: windSpeed0, icon1: windSpeed1, iconW: VW(15), iconH: VH(14),
+    typeName: '高度：',
+    value: '',
+    childrenOptionsList: [
+      {
+        value: '地上10米',
+        label: '地上10米',
+      },
+      {
+        value: '地上100米',
+        label: '地上100米',
+      },
+      {
+        value: '地上250米',
+        label: '地上250米',
+      },
+      {
+        value: '950百帕，500米',
+        label: '950百帕，500米',
+      },
+      {
+        value: '925百帕，750米',
+        label: '925百帕，750米',
+      },
+      {
+        value: '900百帕，1000米',
+        label: '900百帕，1000米',
+      },
+      {
+        value: '850百帕，1500米',
+        label: '850百帕，1500米',
+      },
+      {
+        value: '800百帕，2000米',
+        label: '800百帕，2000米',
+      },
+      {
+        value: '750百帕，2500米',
+        label: '750百帕，2500米',
+      },
+      {
+        value: '700百帕，3000米',
+        label: '700百帕，3000米',
+      },
+      {
+        value: '650百帕，3600米',
+        label: '650百帕，3600米',
+      },
+      {
+        value: '600百帕，4200米',
+        label: '600百帕，4200米',
+      },
+      {
+        value: '500百帕，5500米',
+        label: '500百帕，5500米',
+      },
+      {
+        value: '300百帕，9000米',
+        label: '300百帕，9000米',
+      },
+      {
+        value: '200百帕，12000米',
+        label: '200百帕，12000米',
+      },
+      {
+        value: '10 hPa, 30000 m',
+        label: '10 hPa, 30000 m',
+      },
+    ], fn: () => {
+      // console.log('2')
+    }
+  },
+  {
+    id: 3,
+    name: '阵风',
+    icon0: zhenfeng0,
+    icon1: zhenfeng1,
+    iconW: VW(20),
+    iconH: VH(20),
+    typeName: '',
+    value: '',
+    defaultOption: '',
+    childrenOptionsList: [
+      {
+        value: '每小时',
+        label: '每小时',
+      },
+      {
+        value: '开始于10-10 02:00',
+        label: '开始于10-10 02:00',
+      },
+    ],
+    fn: () => {
+      // console.log('0')
+    }
+  },
+  {
+    id: 4,
+    name: '气压',
+    icon0: daqiya0,
+    icon1: daqiya1,
+    iconW: VW(20),
+    iconH: VH(20),
+    typeName: '',
+    value: '',
+    defaultOption: '',
+    childrenOptionsList: null,
+    fn: () => {
+      // console.log('0')
+    }
+  },
+  {
+    id: 5,
     name: '温度',
     icon0: temperature0,
     icon1: temperature1,
     iconW: VW(8),
     iconH: VH(16),
-    typeName: '高度',
+    typeName: '高度：',
     value: '',
     defaultOption: '',
     childrenOptionsList: [
@@ -194,106 +409,8 @@ const optionsList = ref([
     }
   },
   {
-    id: 1, name: '降水量', icon0: precipitation0, icon1: precipitation1, iconW: VW(10), iconH: VH(14.5),
-    typeName: '累积',
-    value: '',
-    childrenOptionsList: [
-      {
-        value: '每小时',
-        label: '每小时',
-      },
-      {
-        value: '每3个小时',
-        label: '每3个小时',
-      },
-      {
-        value: '开始于10-10 08:00',
-        label: '开始于10-10 08:00',
-      },
-      {
-        value: '每月异常',
-        label: '每月异常',
-      },
-    ], fn: () => {
-      console.log('1')
-    }
-  },
-  {
-    id: 2, name: '风速', icon0: windSpeed0, icon1: windSpeed1, iconW: VW(15), iconH: VH(14),
-    typeName: '高度',
-    value: '',
-    childrenOptionsList: [
-      {
-        value: '地上10米',
-        label: '地上10米',
-      },
-      {
-        value: '地上100米',
-        label: '地上100米',
-      },
-      {
-        value: '地上250米',
-        label: '地上250米',
-      },
-      {
-        value: '950百帕，500米',
-        label: '950百帕，500米',
-      },
-      {
-        value: '925百帕，750米',
-        label: '925百帕，750米',
-      },
-      {
-        value: '900百帕，1000米',
-        label: '900百帕，1000米',
-      },
-      {
-        value: '850百帕，1500米',
-        label: '850百帕，1500米',
-      },
-      {
-        value: '800百帕，2000米',
-        label: '800百帕，2000米',
-      },
-      {
-        value: '750百帕，2500米',
-        label: '750百帕，2500米',
-      },
-      {
-        value: '700百帕，3000米',
-        label: '700百帕，3000米',
-      },
-      {
-        value: '650百帕，3600米',
-        label: '650百帕，3600米',
-      },
-      {
-        value: '600百帕，4200米',
-        label: '600百帕，4200米',
-      },
-      {
-        value: '500百帕，5500米',
-        label: '500百帕，5500米',
-      },
-      {
-        value: '300百帕，9000米',
-        label: '300百帕，9000米',
-      },
-      {
-        value: '200百帕，12000米',
-        label: '200百帕，12000米',
-      },
-      {
-        value: '10 hPa, 30000 m',
-        label: '10 hPa, 30000 m',
-      },
-    ], fn: () => {
-      console.log('2')
-    }
-  },
-  {
-    id: 3, name: '湿度', icon0: humidity0, icon1: humidity1, iconW: VW(14.5), iconH: VH(15),
-    typeName: '湿度',
+    id: 6, name: '湿度', icon0: humidity0, icon1: humidity1, iconW: VW(14.5), iconH: VH(15),
+    typeName: '湿度：',
     value: '',
     childrenOptionsList: [
       {
@@ -321,8 +438,33 @@ const optionsList = ref([
     }
   },
   {
-    id: 4, name: '能见度', icon0: visibility0, icon1: visibility1, iconW: VW(15.5), iconH: VH(9),
-    typeName: '范围',
+    id: 7, name: '降水量', icon0: precipitation0, icon1: precipitation1, iconW: VW(10), iconH: VH(14.5),
+    typeName: '累积：',
+    value: '',
+    childrenOptionsList: [
+      {
+        value: '每小时',
+        label: '每小时',
+      },
+      {
+        value: '每3个小时',
+        label: '每3个小时',
+      },
+      {
+        value: '开始于10-10 08:00',
+        label: '开始于10-10 08:00',
+      },
+      {
+        value: '每月异常',
+        label: '每月异常',
+      },
+    ], fn: () => {
+      console.log('1')
+    }
+  },
+  {
+    id: 8, name: '能见度', icon0: visibility0, icon1: visibility1, iconW: VW(15.5), iconH: VH(9),
+    typeName: '范围：',
     value: '',
     // childrenOptionsList: [
     //   {
@@ -387,7 +529,7 @@ onMounted(() => {
   {
     /*高德*/
     /*默认地图*/
-    // L.tileLayer.chinaProvider('Geoq.Normal.Gray', {maxZoom: 18, minZoom: 3, subtitle: 'TianDiTu'}).addTo(map);
+    L.tileLayer.chinaProvider('Geoq.Normal.Gray', {maxZoom: 18, minZoom: 3, subtitle: 'TianDiTu'}).addTo(map);
 
     /*卫星地图*/
     // L.tileLayer.chinaProvider('GaoDe.Satellite.Map', {maxZoom: 18, minZoom: 3, subtitle: '高德'}).addTo(map);
@@ -395,12 +537,12 @@ onMounted(() => {
 
 
     /* 黑色map */
-    let url = 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png';
-    L.tileLayer(url, {
-      attribution: 'OSM & Carto',
-      subdomains: 'abcd',
-      maxZoom: 19
-    }).addTo(map);
+    // let url = 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png';
+    // L.tileLayer(url, {
+    //   attribution: 'OSM & Carto',
+    //   subdomains: 'abcd',
+    //   maxZoom: 19
+    // }).addTo(map);
   }
 
   {
@@ -466,16 +608,17 @@ const date = ref(new Date())
 
 
 let selectedTime = ref()
-onMounted(() => {
-  // value.value = optionsList.value[0].childrenOptionsList[1].value
 
-  // 定义时间范围
+
+function createSVGChart() {// 定义时间范围
   const startDate = new Date('2020-01-01');
   const endDate = new Date('2020-01-02');
 
 
   //获取svg
   const svg = d3.select('.axis')
+  // .attr('preserveAspectRatio', 'xMidYMid meet')
+  // .attr('viewBox', '0 0 400 400')
   // 获取svg宽度
   const svgWidth = svg.node().getBoundingClientRect().width;
 
@@ -514,7 +657,7 @@ onMounted(() => {
 // 添加黑色背景
   svg.insert('rect', ':first-child')
       .attr('x', 0)
-      .attr('y', 33.5)
+      .attr('y', 34.5)
       .attr('width', svgWidth)
       .attr('height', 10)
       .style('fill', 'rgba(0,0,0,0.333)')
@@ -523,7 +666,7 @@ onMounted(() => {
 //添加进度条
   const progress = svg.append('rect')
       .attr('x', xScale(startDate))
-      .attr('y', 35.5)
+      .attr('y', 36.5)
       .attr('width', 0)
       .attr('height', 6)
       .style('fill', '#2F80ED')
@@ -533,14 +676,14 @@ onMounted(() => {
       .attr('x1', 0)
       .attr('y1', 25)
       .attr('x2', 0)
-      .attr('y2', 33.5)
+      .attr('y2', 34.5)
       .style('stroke', 'rgba(0,0,0,0.333)')
       .style('stroke-width', 2)
       .style('opacity', 0);
   // 添加圆点
   const circle = svg.append('circle')
       .attr('cx', xScale(startDate))
-      .attr('cy', 38)
+      .attr('cy', 40)
       .attr('r', 8)
       .style('fill', 'white')
       .style('cursor', 'e-resize')
@@ -626,14 +769,18 @@ onMounted(() => {
     // 隐藏刻度线
     tooltipTick.style('opacity', 0);
   });
+}
 
-
+onMounted(() => {
+  // value.value = optionsList.value[0].childrenOptionsList[1].value
+  createSVGChart()
+})
 // 模拟数据
-  const data = [
-    {time: new Date('2020-01-01 12:00'), value: 10},
-    {time: new Date('2020-01-01 18:00'), value: 20},
-    //...
-  ];
+const data222 = [
+  {time: new Date('2020-01-01 12:00'), value: 10},
+  {time: new Date('2020-01-01 18:00'), value: 20},
+  //...
+];
 
 // 点击回调函数
 //   function onclick(d) {
@@ -664,7 +811,6 @@ onMounted(() => {
 //     svg.selectAll('.tick')
 //         .attr('font-weight', d => d > selectedTime.value ? 'bold' : 'normal');
 //   }
-})
 </script>
 
 <template>
@@ -674,17 +820,19 @@ onMounted(() => {
     <div class="item" :class="{ active: item.id ===selectedID  }" @click="selected(item.id);item.fn()"
          v-for="item in optionsList"
          :key="item.id">
-      <div class="icon-info">
-        <img class="img" :style="{'width':item.iconW,'height':item.iconH}"
-             :src="item.id ===selectedID?item.icon1:item.icon0" alt="">
-      </div>
-      <div class="bgColor">
-        {{ item.name }}
+      <div class="item_layout">
+        <div class="icon-info">
+          <img class="img" :style="{'width':item.iconW,'height':item.iconH}"
+               :src="item.id ===selectedID?item.icon1:item.icon0" alt="">
+        </div>
+        <div class="bgColor">
+          <span>{{ item.name }}</span>
+        </div>
       </div>
       <div class="selectOptions" v-show="item.id ===selectedID&&item.childrenOptionsList">
-        <div class="typeName">{{ item.typeName }}:</div>
+        <div class="typeName"><span>{{ item.typeName }}</span></div>
         <el-select v-model="item.value" :placeholder="item.childrenOptionsList&&item.childrenOptionsList[0].value"
-                   size="small"
+                   size="small" :suffix-icon="IconDropDown"
         >
           <el-option
               v-for="i in item.childrenOptionsList"
@@ -714,21 +862,23 @@ onMounted(() => {
       <img class="img" src="@/assets/png/Vector@2x(5).png" alt="">
     </div>
     <div class="progressBar">
-      <div class="dateBg">
+      <div id="dateBg" class="dateBg">
         <el-date-picker
             v-model="date"
             type="date"
-            placeholder="Pick a date"
-            :default-value="new Date()"
+            placeholder="请选择日期"
+            :suffix-icon="IconTime"
         />
       </div>
-      <svg class="axis"></svg>
+      <div class="svg_container">
+        <svg class="axis"></svg>
+      </div>
     </div>
     <div class="gotoButton">
       <img class="img" src="@/assets/png/Vector@2x(6).png" alt="">
     </div>
-    <div class="settingButton">
-      <el-select v-model="value" class="m-2" placeholder="数值" placement="top">
+    <div id="settingButton" class="settingButton">
+      <el-select v-model="value" class="m-2" placeholder="数值" placement="top" :suffix-icon="IconDropDown">
         <el-option
             v-for="item in [{value:'正常',label:'正常'},{value:'强',label:'强'},{value:'薄',label:'薄'},{value:'弱',label:'弱'},]"
             :key="item.value"
@@ -750,29 +900,42 @@ onMounted(() => {
 
 .el-select {
   --el-select-input-focus-border-color: none;
+  display: flex;
+  align-items: center;
 }
 
 ::v-deep(.el-input__wrapper:hover) {
   box-shadow: 0 0 0 0 var(--el-input-hover-border-color) inset !important;
 }
 
-::v-deep(.el-input__inner) {
-  color: white;
-}
-
 ::v-deep(input::-webkit-input-placeholder,input:-moz-placeholder,input:-ms-input-placeholder) {
   color: white;
+  font-size: rem(12);
+  transform: translateY(vh(1));
 }
 
+:deep(.el-input--small .el-input__inner ) {
+  height: vh(24);
+  font-size: rem(12);
+}
 
+:deep(.el-input__suffix) {
+  transform: translateX(vw(-10));
+}
+
+.el-select-dropdown__item {
+  font-size: rem(14);
+  height: vh(34);
+  line-height: vh(34);
+}
 
 .left-wrapper {
   cursor: pointer;
   z-index: 999;
-  height: 350px;
+  height: vh(500);
   position: absolute;
-  top: 285px;
-  left: 40px;
+  top: vh(285);
+  left: vw(40);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -780,65 +943,78 @@ onMounted(() => {
   .item {
     pointer-events: all;
 
-    .icon-info {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .item_layout{
       position: relative;
-      z-index: 2;
-      box-shadow: 3px 0 5px 3px rgba(0, 0, 0, .25);
-    }
+      .icon-info {
+        position: absolute;
+        width: vw(30);
+        height: vh(30);
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        //position: relative;
+        //z-index: 2;
+        box-shadow: vh(3) 0 vh(5) vw(-3) rgba(0, 0, 0, .25);
+      }
 
-    .bgColor {
-      position: relative;
-      z-index: 1;
-      width: 90px;
-      height: 30px;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, .4);
-      background: rgba(0, 0, 0, 0.5);
-      margin-top: -30px;
-      margin-left: 15px;
-      border-top-right-radius: 15px;
-      border-bottom-right-radius: 15px;
-      font-size: 12px;
-      font-family: Microsoft YaHei-Regular, Microsoft YaHei;
-      font-weight: 400;
-      color: #FFFFFF;
-      line-height: 14px;
-      letter-spacing: 1px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+      .bgColor {
+        //position: relative;
+        //z-index: 1;
+        //width: vw(105);
+        //height: vh(30);
+        text-shadow: vh(1) vw(1) vh(3) rgba(0, 0, 0, .4);
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: vh(15);
+        font-size: rem(14);
+        font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+        font-weight: 400;
+        color: #FFFFFF;
+        line-height: vh(14);
+        letter-spacing: vw(1);
+        //display: flex;
+        //justify-content: center;
+        //align-items: center;
+        display: inline-block;
+        padding: vh(8) vw(20) vh(8) vw(50);
 
+        span {
+          white-space: nowrap;
+        }
+      }
+
+    }
     .selectOptions {
-      width: 192px;
-      height: 22px;
+      width: vw(192);
+      height: vh(22);
       background: rgba(0, 0, 0, 0.5);
-      border-radius: 10px;
-      margin-top: 10px;
+      border-radius: vw(10);
+      margin-top: vh(10);
       display: flex;
-      font-size: 12px;
+      font-size: rem(12);
       font-family: Microsoft YaHei-Regular, Microsoft YaHei;
       font-weight: 400;
       color: #FFFFFF;
-      letter-spacing: 2px;
+      letter-spacing: vw(2);
 
       .typeName {
+        margin-right: vw(8);
+        margin-left: vw(10);
+        font-size: rem(14);
         display: flex;
         align-items: center;
-        margin-right: 8px;
-        margin-left: 10px;
-        font-size: 12px;
+        white-space: nowrap;
+
+        span {
+          line-height: vh(14);
+        }
+
       }
 
       ::v-deep(.el-input__wrapper) {
         background: #0000;
-        width: 140px;
+        width: vw(140);
         box-shadow: none;
       }
 
@@ -850,15 +1026,11 @@ onMounted(() => {
   }
 
   .item.active .icon-info {
-    background: rgba(47, 128, 237, 1);
+    background: #1373eb;
   }
 
   .item.active .bgColor {
-    background: rgba(47, 128, 237, 0.6);
-  }
-
-  .item.active .bgColor:hover {
-    background: rgba(47, 128, 237, 0.6);
+    background: rgba(19, 115, 235, 0.6);
   }
 }
 
@@ -867,143 +1039,151 @@ onMounted(() => {
   cursor: pointer;
   z-index: 999;
   position: absolute;
-  top: 90px;
-  right: 40px;
-  width: 50px;
-  height: 332px;
+  top: vh(90);
+  right: vw(40);
+  width: vw(50);
+  height: vh(332);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
   .item-wrapper {
     pointer-events: all;
-    width: 50px;
-    height: 50px;
+    width: vw(50);
+    height: vh(50);
     border-radius: 50%;
-    background: #fff;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
 
     .img {
-      width: 20px;
-      height: 20px;
+      width: vw(20);
+      height: vh(20);
     }
   }
 }
 
 .bottom-wrapper {
+  width: vw(1840);
   cursor: pointer;
   pointer-events: all;
   z-index: 999;
   position: absolute;
-  left: 40px;
-  bottom: 40px;
+  left: vw(40);
+  bottom: vh(40);
   display: flex;
+  justify-content: space-between;
   align-items: center;
 
   .playButton {
-    width: 97px;
-    height: 50px;
-    background: #fff;
-    border-radius: 25px;
+    width: vw(97);
+    height: vh(50);
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: vw(25);
     display: flex;
     align-items: center;
-    margin-right: 91px;
+    //margin-right: vw(91);
 
     .img {
-      width: 16px;
-      height: 20px;
-      margin-left: 21px;
-      margin-right: 12px;
+      width: vw(16);
+      height: vh(20);
+      margin-left: vw(21);
+      margin-right: vw(12);
     }
 
     .text {
-      font-size: 12px;
+      font-size: rem(12);
       font-family: Microsoft YaHei-Regular, Microsoft YaHei;
       font-weight: 400;
       color: #2F80ED;
-      line-height: 14px;
-      letter-spacing: 1px;
+      line-height: vh(14);
+      letter-spacing: vw(1);
     }
   }
 
   .backButton {
-    width: 50px;
-    height: 50px;
-    background: #fff;
-    border-radius: 25px;
+    width: vw(50);
+    height: vh(50);
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: vw(25);
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 50px;
+    //margin-right: vw(50);
 
     .img {
-      width: 13px;
-      height: 20px;
+      width: vw(13);
+      height: vh(20);
     }
   }
 
   .progressBar {
-    width: 1266px;
-    height: 20px;
-    margin-right: 50px;
+    width: vw(1266);
+    height: vh(20);
+    //margin-right: vw(50);
     display: flex;
     align-items: center;
 
     .dateBg {
-      width: 170px;
-      height: 20px;
-      background: #fff;
-      border-radius: 10px;
+      width: vw(170);
+      height: vh(20);
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: vw(10);
       display: flex;
       align-items: center;
 
       ::v-deep(.el-input__wrapper) {
         background: #0000;
-        width: 170px;
+        width: vw(170);
         box-shadow: none;
       }
 
       //margin-right: 20px;
     }
 
-    .axis {
-      height: 80px;
+    .svg_container {
+      height: vh(80);
       display: inline-block;
-      /*border: 1px solid red;*/
+      border: 1px solid red;
       flex: 1;
       /*background: blue;*/
+      .axis {
+        width: 100%;
+        height: 100%;
+      }
     }
   }
 
   .gotoButton {
-    width: 50px;
-    height: 50px;
-    background: #fff;
-    border-radius: 25px;
+    width: vw(50);
+    height: vh(50);
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: vw(25);
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 50px;
+    //margin-right: vw(50);
 
     .img {
-      width: 13px;
-      height: 20px;
+      width: vw(13);
+      height: vh(20);
     }
   }
 
   .settingButton {
-    width: 101px;
-    height: 30px;
+    width: vw(101);
+    height: vh(30);
     background: rgba(0, 0, 0, 0.5);
-    border-radius: 15px;
-    text-align: center;
+    border-radius: vw(15);
+    display: flex;
+    align-items: center;
 
     ::v-deep(.el-input__wrapper) {
       background: #0000;
-      width: 80px;
+      width: vw(110);
       box-shadow: none;
+
     }
   }
 
@@ -1012,4 +1192,20 @@ onMounted(() => {
   }
 }
 
+
+</style>
+<style lang="scss">
+#settingButton {
+  .el-input__inner {
+    text-align: center;
+  }
+}
+
+#dateBg {
+  .el-input__inner {
+    text-align: center;
+    color: white;
+    font-size: rem(12);
+  }
+}
 </style>
