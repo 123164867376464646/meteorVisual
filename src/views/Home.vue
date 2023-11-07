@@ -1,29 +1,39 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import data from "@/assets/testData/exp.json"
+import IconDropDown from "@/components/IconDropDown.vue";
+import IconTime from "@/components/IconTime.vue";
 import icon0 from "@/assets/png/icon0.png";
 import icon1 from "@/assets/png/icon1.png";
 import icon2 from "@/assets/png/icon2.png";
 import icon3 from "@/assets/png/icon3.png";
-import temperature0 from "@/assets/png/Vector@2x(4).png"
+// import temperature0 from "@/assets/png/Vector@2x(4).png"
+import temperature0 from "@/assets/png/whiteIcon/Vector@2x(4).png"
 import temperature1 from "@/assets/png/whiteIcon/Vector@2x(4).png"
-import precipitation0 from "@/assets/png/Vector@2x.png"
+// import precipitation0 from "@/assets/png/Vector@2x.png"
+import precipitation0 from "@/assets/png/whiteIcon/Vector@2x.png"
 import precipitation1 from "@/assets/png/whiteIcon/Vector@2x.png"
-import windSpeed0 from "@/assets/png/Vector@2x(1).png"
+// import windSpeed0 from "@/assets/png/Vector@2x(1).png"
+import windSpeed0 from "@/assets/png/whiteIcon/Vector@2x(1).png"
 import windSpeed1 from "@/assets/png/whiteIcon/Vector@2x(1).png"
-import humidity0 from "@/assets/png/Vector@2x(2).png"
+// import humidity0 from "@/assets/png/Vector@2x(2).png"
+import humidity0 from "@/assets/png/whiteIcon/Vector@2x(2).png"
 import humidity1 from "@/assets/png/whiteIcon/Vector@2x(2).png"
-import visibility0 from "@/assets/png/Vector@2x(3).png"
+// import visibility0 from "@/assets/png/Vector@2x(3).png"
+import visibility0 from "@/assets/png/whiteIcon/Vector@2x(3).png"
 import visibility1 from "@/assets/png/whiteIcon/Vector@2x(3).png"
-import IconDropDown from "@/components/IconDropDown.vue";
-import IconTime from "@/components/IconTime.vue";
-import dataR0 from "@/assets/png/datar.png";
+
+// import dataR0 from "@/assets/png/datar.png";
+import dataR0 from "@/assets/png/whiteIcon/dataR.png";
 import dataR1 from "@/assets/png/whiteIcon/dataR.png";
-import qiehuan0 from "@/assets/png/qiehuan0.png";
+// import qiehuan0 from "@/assets/png/qiehuan0.png";
+import qiehuan0 from "@/assets/png/whiteIcon/qiehuan1.png";
 import qiehuan1 from "@/assets/png/whiteIcon/qiehuan1.png";
-import daqiya0 from "@/assets/png/大气压力.png";
+// import daqiya0 from "@/assets/png/大气压力.png";
+import daqiya0 from "@/assets/png/whiteIcon/大气压力.png";
 import daqiya1 from "@/assets/png/whiteIcon/大气压力.png";
-import zhenfeng0 from "@/assets/png/阵风.png";
+// import zhenfeng0 from "@/assets/png/阵风.png";
+import zhenfeng0 from "@/assets/png/whiteIcon/阵风.png";
 import zhenfeng1 from "@/assets/png/whiteIcon/阵风.png";
 
 
@@ -536,7 +546,7 @@ onMounted(() => {
   {
     /*高德*/
     /*默认地图*/
-    L.tileLayer.chinaProvider('Geoq.Normal.Gray', {maxZoom: 18, minZoom: 3, subtitle: 'TianDiTu'}).addTo(map);
+    // L.tileLayer.chinaProvider('Geoq.Normal.Gray', {maxZoom: 18, minZoom: 3, subtitle: 'TianDiTu'}).addTo(map);
 
     /*卫星地图*/
     // L.tileLayer.chinaProvider('GaoDe.Satellite.Map', {maxZoom: 18, minZoom: 3, subtitle: '高德'}).addTo(map);
@@ -544,12 +554,12 @@ onMounted(() => {
 
 
     /* 黑色map */
-    // let url = 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png';
-    // L.tileLayer(url, {
-    //   attribution: 'OSM & Carto',
-    //   subdomains: 'abcd',
-    //   maxZoom: 19
-    // }).addTo(map);
+    let url = 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png';
+    L.tileLayer(url, {
+      attribution: 'OSM & Carto',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(map);
   }
 
   {
@@ -805,10 +815,10 @@ function updateSVGChart() {
   //TODO 更新进度条
   progressWidth = xScale(newDate) - xScale(startDate);
   progress.attr('width', progressWidth);
- //TODO 更新圆点
+  //TODO 更新圆点
   circle.attr('cx', xScale(newDate));//更新位置
-console.log("🚀 ~ name:xScale(newDate) ",xScale(newDate))
-  console.log("🚀 ~ name:newDate ",newDate)
+  console.log("🚀 ~ name:xScale(newDate) ", xScale(newDate))
+  console.log("🚀 ~ name:newDate ", newDate)
 }
 
 // createSVGChart();
@@ -889,7 +899,7 @@ const data222 = [
 <template>
   <div id="map"></div>
 
-  <div class="left-wrapper">
+    <div class="left-wrapper">
     <div class="item" :class="{ active: item.id ===selectedID  }" @click="selected(item.id);item.fn()"
          v-for="item in optionsList"
          :key="item.id">
@@ -904,15 +914,29 @@ const data222 = [
       </div>
       <div class="selectOptions" v-show="item.id ===selectedID&&item.childrenOptionsList">
         <div class="typeName"><span>{{ item.typeName }}</span></div>
-        <el-select v-model="item.value" :placeholder="item.childrenOptionsList&&item.childrenOptionsList[0].value"
-                   size="small" :suffix-icon="IconDropDown"
+<!--                <el-select v-model="item.value" :placeholder="item.childrenOptionsList&&item.childrenOptionsList[0].value"-->
+<!--                           size="small" :suffix-icon="IconDropDown"-->
+<!--                >-->
+<!--                  <el-option-->
+<!--                      v-for="i in item.childrenOptionsList"-->
+<!--                      :key="i.value"-->
+<!--                      :label="i.label"-->
+<!--                      :value="i.value"-->
+<!--                  />-->
+<!--                </el-select>-->
+        <el-select class="autoWidth-select" v-model="item.value"
+                   :placeholder="item.childrenOptionsList&&item.childrenOptionsList[0].value"
+                   :suffix-icon="IconDropDown"
         >
+          <template slot="prefix">
+            {{ (item.childrenOptionsList&&item.childrenOptionsList.find(s => s.value === value) || {}).label }}
+          </template>
           <el-option
               v-for="i in item.childrenOptionsList"
               :key="i.value"
               :label="i.label"
-              :value="i.value"
-          />
+              :value="i.value">
+          </el-option>
         </el-select>
       </div>
     </div>
@@ -971,37 +995,6 @@ const data222 = [
 }
 
 
-.el-select {
-  --el-select-input-focus-border-color: none;
-  display: flex;
-  align-items: center;
-}
-
-::v-deep(.el-input__wrapper:hover) {
-  box-shadow: 0 0 0 0 var(--el-input-hover-border-color) inset !important;
-}
-
-::v-deep(input::-webkit-input-placeholder,input:-moz-placeholder,input:-ms-input-placeholder) {
-  color: white;
-  font-size: rem(12);
-  transform: translateY(vh(1));
-}
-
-:deep(.el-input--small .el-input__inner ) {
-  height: vh(24);
-  font-size: rem(12);
-}
-
-:deep(.el-input__suffix) {
-  transform: translateX(vw(-10));
-}
-
-.el-select-dropdown__item {
-  font-size: rem(14);
-  height: vh(34);
-  line-height: vh(34);
-}
-
 .left-wrapper {
   cursor: pointer;
   z-index: 999;
@@ -1027,8 +1020,8 @@ const data222 = [
         width: vw(30);
         height: vh(30);
         border-radius: 50%;
-        //background: rgba(0, 0, 0, 0.5);
-        background: white;
+        background: rgba(0, 0, 0, 0.5);
+        //background: white;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -1065,10 +1058,11 @@ const data222 = [
     }
 
     .selectOptions {
-      width: vw(192);
-      height: vh(22);
+      width: vw(224);
+      //display: inline-block;
+      //height: vh(28);
       background: rgba(0, 0, 0, 0.5);
-      border-radius: vw(10);
+      border-radius: rem(16);
       margin-top: vh(10);
       display: flex;
       font-size: rem(12);
@@ -1076,10 +1070,11 @@ const data222 = [
       font-weight: 400;
       color: #FFFFFF;
       letter-spacing: vw(2);
+      padding-left: vw(10);
 
       .typeName {
-        margin-right: vw(8);
-        margin-left: vw(10);
+        //margin-right: vw(8);
+        //margin-left: vw(10);
         font-size: rem(14);
         display: flex;
         align-items: center;
@@ -1093,7 +1088,7 @@ const data222 = [
 
       ::v-deep(.el-input__wrapper) {
         background: #0000;
-        width: vw(140);
+        //width: 140px;
         box-shadow: none;
       }
 
@@ -1159,7 +1154,7 @@ const data222 = [
   .playButton {
     flex: none;
     width: vw(97);
-    height: vh(50);
+    height: vh(30);
     background: rgba(0, 0, 0, 0.5);
     border-radius: vw(25);
     display: flex;
@@ -1178,7 +1173,7 @@ const data222 = [
       font-size: rem(12);
       font-family: Microsoft YaHei-Regular, Microsoft YaHei;
       font-weight: 400;
-      color: #2F80ED;
+      color: white;
       line-height: vh(14);
       letter-spacing: vw(1);
     }
@@ -1186,8 +1181,8 @@ const data222 = [
 
   .backButton {
     flex: none;
-    width: vw(50);
-    height: vh(50);
+    width: vw(30);
+    height: vh(30);
     background: rgba(0, 0, 0, 0.5);
     border-radius: vw(25);
     display: flex;
@@ -1244,8 +1239,8 @@ const data222 = [
 
   .gotoButton {
     flex: none;
-    width: vw(50);
-    height: vh(50);
+    width: vw(30);
+    height: vh(30);
     background: rgba(0, 0, 0, 0.5);
     border-radius: vw(25);
     display: flex;
@@ -1286,11 +1281,48 @@ const data222 = [
 
 </style>
 <style lang="scss">
+.left-wrapper {
+  .el-select {
+    --el-select-input-focus-border-color: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .el-input__inner::placeholder {
+    color: white;
+    font-size: rem(14);
+  }
+
+  .el-input__suffix {
+    transform: translateX(vw(-10));
+  }
+
+  .el-select-dropdown__item {
+    height: vh(34);
+    line-height: vh(34);
+  }
+}
+
 #settingButton {
   .el-input__inner {
     text-align: center;
     color: white;
     font-size: rem(12);
+  }
+
+  .el-input__inner::placeholder {
+    color: white;
+    font-size: rem(14);
+  }
+
+  .el-select {
+    --el-select-input-focus-border-color: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .el-input__wrapper:hover {
+    box-shadow: 0 0 0 0 var(--el-input-hover-border-color) inset !important;
   }
 }
 
@@ -1307,6 +1339,25 @@ const data222 = [
     text-align: center;
     color: white;
     font-size: rem(12);
+  }
+  .el-input{
+    height: vh(24);
+  }
+  .autoWidth-select {
+    min-width: vw(75);
+  }
+  .autoWidth-select >>> .el-input__prefix{
+    position: relative;
+    left: 0;
+    box-sizing: border-box;
+    border: 1px solid #ffffff00;
+    padding: 0 vh(30);
+    height: vh(40);
+    line-height: vh(20);
+    visibility: hidden;
+  }
+  .autoWidth-select >>> input{
+    position: absolute;
   }
 }
 </style>
