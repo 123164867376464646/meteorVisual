@@ -107,10 +107,10 @@ let map = ref(null)
 // }
 
 const VW = (w) => {
-  return  (w/16)+'em'
+  return (w / 16) + 'em'
 }
 const VH = (h) => {
-  return  (h/16)+'em'
+  return (h / 16) + 'em'
 }
 
 const controlList = [
@@ -616,26 +616,35 @@ const date = ref(new Date())
 
 let selectedTime = ref()
 
+let svg = null
+let svgWidth = null
+let xScale = null
+let old_xScale = null
+let xAxis = null
+let progress = null
+let progressWidth = null//进度条长度
+let circle = null
+// 定义时间范围
+let startDate = new Date('2020-01-01');
+let endDate = new Date('2020-01-02');
+let cx
+let newDate = startDate
 
-function createSVGChart() {// 定义时间范围
-  const startDate = new Date('2020-01-01');
-  const endDate = new Date('2020-01-02');
+function createSVGChart() {
 
-
-  //获取svg
-  const svg = d3.select('.axis')
+//获取svg
+  svg = d3.select('.axis')
   // .attr('preserveAspectRatio', 'xMidYMid meet')
   // .attr('viewBox', '0 0 400 400')
   // 获取svg宽度
-  const svgWidth = svg.node().getBoundingClientRect().width;
-
-// 初始化时间比例尺
-  const xScale = d3.scaleTime()
+  svgWidth = svg.node().getBoundingClientRect().width;
+  // 初始化时间比例尺
+  xScale = d3.scaleTime()
       .domain([startDate, endDate])
       .range([20, svgWidth - 20]);
 
-// 创建D3时间轴
-  const xAxis = d3.axisBottom(xScale)
+  // 创建D3时间轴
+  xAxis = d3.axisBottom(xScale)
       .tickFormat(d3.timeFormat('%H:%M'))
       .tickPadding(10)
       .tickSizeOuter(0)
@@ -671,7 +680,7 @@ function createSVGChart() {// 定义时间范围
       .style('pointer-events', 'none');
 
 //添加进度条
-  const progress = svg.append('rect')
+  progress = svg.append('rect')
       .attr('x', xScale(startDate))
       .attr('y', 36.5)
       .attr('width', 0)
@@ -688,7 +697,7 @@ function createSVGChart() {// 定义时间范围
       .style('stroke-width', 2)
       .style('opacity', 0);
   // 添加圆点
-  const circle = svg.append('circle')
+  circle = svg.append('circle')
       .attr('cx', xScale(startDate))
       .attr('cy', 40)
       .attr('r', 8)
@@ -705,28 +714,30 @@ function createSVGChart() {// 定义时间范围
 
   });
 
-
-  let cx
+  //点击事件 更新圆点以及进度条
   svg.select('g')
       .on('click', function (event) {
-        cx = d3.pointer(event)[0];
-        const newDate = xScale.invert(cx);
-        circle.attr('cx', xScale(newDate));
+        cx = d3.pointer(event)[0];//位置
+        newDate = xScale.invert(cx);//计算日期
+        circle.attr('cx', xScale(newDate));//更新位置
+        console.log("🚀 ~ name:cx ", cx)
 
-        const progressWidth = cx - xScale(startDate);
+
+        progressWidth = cx - xScale(startDate);
         progress.attr('width', progressWidth);
       });
 
 
-// 拖动事件
+// 拖动事件 更新圆点以及进度条
   circle.call(d3.drag()
       .on('drag', function (event) {
         cx = event.x;
         cx = Math.max(Math.min(cx, svgWidth - 20), 20); // 限制拖动范围在时间轴范围内
-        d3.select(this).attr('cx', cx);
-        const newDate = xScale.invert(cx);
-        const progressWidth = xScale(newDate) - xScale(startDate);
-        progress.attr('width', progressWidth);
+        d3.select(this).attr('cx', cx)//更新圆点
+
+        newDate = xScale.invert(cx);
+        progressWidth = xScale(newDate) - xScale(startDate);
+        progress.attr('width', progressWidth);//更新进度条
       })
   );
 
@@ -777,6 +788,61 @@ function createSVGChart() {// 定义时间范围
     tooltipTick.style('opacity', 0);
   });
 }
+
+function updateSVGChart() {
+  svgWidth = svg.node().getBoundingClientRect().width;
+  // old_xScale = xScale
+  xScale.range([20, svgWidth - 20]);//更新比例尺
+  xAxis.ticks(Math.floor(svgWidth / 100));//更新刻度值显示个数
+
+  //TODO 目前存在更新后字体颜色变黑问题 暂时用此方法解决
+  svg.selectAll("text").style("color", 'white');
+  //隐藏刻度线
+  svg.selectAll("line").style("display", "none");
+
+  svg.select('g').call(xAxis);//更新时间轴
+  svg.select('rect').attr('width', svgWidth);//更新背景色长度
+  //TODO 更新进度条
+  progressWidth = xScale(newDate) - xScale(startDate);
+  progress.attr('width', progressWidth);
+ //TODO 更新圆点
+  circle.attr('cx', xScale(newDate));//更新位置
+console.log("🚀 ~ name:xScale(newDate) ",xScale(newDate))
+  console.log("🚀 ~ name:newDate ",newDate)
+}
+
+// createSVGChart();
+
+window.addEventListener('resize', updateSVGChart);
+
+// window.addEventListener('resize', function() {
+//   // 获取新的svg宽度
+//   svgWidth = svg.node().getBoundingClientRect().width;
+//
+//   // 更新时间比例尺的范围
+//   xScale.range([20, svgWidth - 20]);
+//
+//   // 获取圆点当前的日期
+//   const currentDate = xScale.invert(parseFloat(circle.attr('cx')));
+//
+//   // 更新时间比例尺的域
+//   xScale.domain([startDate, currentDate]);
+//
+//   // 更新x轴
+//   xAxis.scale(xScale);
+//   svg.select('g').call(xAxis);
+//
+//   // 更新黑色背景的宽度
+//   svg.select('rect').attr('width', svgWidth);
+//
+//   // 更新圆点的位置
+//   circle.attr('cx', xScale(currentDate));
+//
+//   // 更新进度条的宽度
+//   const progressWidth = xScale(currentDate) - xScale(startDate);
+//   progress.attr('width', progressWidth);
+// });
+
 
 onMounted(() => {
   // value.value = optionsList.value[0].childrenOptionsList[1].value
@@ -953,14 +1019,16 @@ const data222 = [
   .item {
     pointer-events: all;
 
-    .item_layout{
+    .item_layout {
       position: relative;
+
       .icon-info {
         position: absolute;
         width: vw(30);
         height: vh(30);
         border-radius: 50%;
-        background: rgba(0, 0, 0, 0.5);
+        //background: rgba(0, 0, 0, 0.5);
+        background: white;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -974,6 +1042,7 @@ const data222 = [
         //z-index: 1;
         //width: vw(105);
         //height: vh(30);
+        box-shadow: 0 vw(1.5) vh(3) rgba(0, 0, 0, .25);
         text-shadow: vh(1) vw(1) vh(3) rgba(0, 0, 0, .4);
         background: rgba(0, 0, 0, 0.5);
         border-radius: vh(15);
@@ -994,6 +1063,7 @@ const data222 = [
       }
 
     }
+
     .selectOptions {
       width: vw(192);
       height: vh(22);
@@ -1095,6 +1165,7 @@ const data222 = [
     display: flex;
     align-items: center;
     margin-right: vw(69);
+    box-shadow: 0 vw(1.5) vh(3) rgba(0, 0, 0, .25);
 
     .img {
       width: vw(16);
@@ -1123,6 +1194,7 @@ const data222 = [
     justify-content: center;
     align-items: center;
     margin-right: vw(69);
+    box-shadow: 0 vw(1.5) vh(3) rgba(0, 0, 0, .25);
 
     .img {
       width: vw(13);
@@ -1145,6 +1217,7 @@ const data222 = [
       border-radius: vw(10);
       display: flex;
       align-items: center;
+      box-shadow: 0 vw(1.5) vh(3) rgba(0, 0, 0, .25);
 
       ::v-deep(.el-input__wrapper) {
         background: #0000;
@@ -1160,7 +1233,8 @@ const data222 = [
       display: inline-block;
       //border: 1px solid red;
       flex: 1;
-      /*background: blue;*/
+      //background: #c5c0c0;
+
       .axis {
         width: 100%;
         height: 100%;
@@ -1178,6 +1252,7 @@ const data222 = [
     justify-content: center;
     align-items: center;
     margin-right: vw(69);
+    box-shadow: 0 vw(1.5) vh(3) rgba(0, 0, 0, .25);
 
     .img {
       width: vw(13);
@@ -1193,6 +1268,7 @@ const data222 = [
     border-radius: vw(15);
     display: flex;
     align-items: center;
+    box-shadow: 0 vw(1.5) vh(3) rgba(0, 0, 0, .25);
 
     ::v-deep(.el-input__wrapper) {
       background: #0000;
@@ -1225,7 +1301,8 @@ const data222 = [
     font-size: rem(12);
   }
 }
-.selectOptions{
+
+.selectOptions {
   .el-input__inner {
     text-align: center;
     color: white;
