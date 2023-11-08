@@ -3,10 +3,16 @@ import {onMounted, ref} from "vue";
 import data from "@/assets/testData/exp.json"
 import IconDropDown from "@/components/IconDropDown.vue";
 import IconTime from "@/components/IconTime.vue";
-import icon0 from "@/assets/png/icon0.png";
-import icon1 from "@/assets/png/icon1.png";
-import icon2 from "@/assets/png/icon2.png";
-import icon3 from "@/assets/png/icon3.png";
+// import icon0 from "@/assets/png/icon0.png";
+// import icon1 from "@/assets/png/icon1.png";
+// import icon2 from "@/assets/png/icon2.png";
+// import icon3 from "@/assets/png/icon3.png";
+
+import icon0 from "@/assets/png/whiteIcon/icon0.png";
+import icon1 from "@/assets/png/whiteIcon/icon1.png";
+import icon2 from "@/assets/png/whiteIcon/icon2.png";
+import icon3 from "@/assets/png/whiteIcon/icon3.png";
+
 // import temperature0 from "@/assets/png/Vector@2x(4).png"
 import temperature0 from "@/assets/png/whiteIcon/Vector@2x(4).png"
 import temperature1 from "@/assets/png/whiteIcon/Vector@2x(4).png"
@@ -899,7 +905,7 @@ const data222 = [
 <template>
   <div id="map"></div>
 
-    <div class="left-wrapper">
+  <div class="left-wrapper">
     <div class="item" :class="{ active: item.id ===selectedID  }" @click="selected(item.id);item.fn()"
          v-for="item in optionsList"
          :key="item.id">
@@ -914,16 +920,16 @@ const data222 = [
       </div>
       <div class="selectOptions" v-show="item.id ===selectedID&&item.childrenOptionsList">
         <div class="typeName"><span>{{ item.typeName }}</span></div>
-<!--                <el-select v-model="item.value" :placeholder="item.childrenOptionsList&&item.childrenOptionsList[0].value"-->
-<!--                           size="small" :suffix-icon="IconDropDown"-->
-<!--                >-->
-<!--                  <el-option-->
-<!--                      v-for="i in item.childrenOptionsList"-->
-<!--                      :key="i.value"-->
-<!--                      :label="i.label"-->
-<!--                      :value="i.value"-->
-<!--                  />-->
-<!--                </el-select>-->
+        <!--                <el-select v-model="item.value" :placeholder="item.childrenOptionsList&&item.childrenOptionsList[0].value"-->
+        <!--                           size="small" :suffix-icon="IconDropDown"-->
+        <!--                >-->
+        <!--                  <el-option-->
+        <!--                      v-for="i in item.childrenOptionsList"-->
+        <!--                      :key="i.value"-->
+        <!--                      :label="i.label"-->
+        <!--                      :value="i.value"-->
+        <!--                  />-->
+        <!--                </el-select>-->
         <el-select class="autoWidth-select" v-model="item.value"
                    :placeholder="item.childrenOptionsList&&item.childrenOptionsList[0].value"
                    :suffix-icon="IconDropDown"
@@ -952,11 +958,11 @@ const data222 = [
 
   <div class="bottom-wrapper">
     <div class="playButton">
-      <img class="img" src="@/assets/png/Vector@2x(7).png" alt="">
+      <img class="img" src="@/assets/png/whiteIcon/Vector@2x(7).png" alt="">
       <span class="text">播放</span>
     </div>
     <div class="backButton">
-      <img class="img" src="@/assets/png/Vector@2x(5).png" alt="">
+      <img class="img" src="@/assets/png/whiteIcon/Vector@2x(5).png" alt="">
     </div>
     <div class="progressBar">
       <div id="dateBg" class="dateBg">
@@ -972,7 +978,7 @@ const data222 = [
       </div>
     </div>
     <div class="gotoButton">
-      <img class="img" src="@/assets/png/Vector@2x(6).png" alt="">
+      <img class="img" src="@/assets/png/whiteIcon/Vector@2x(6).png" alt="">
     </div>
     <div id="settingButton" class="settingButton">
       <el-select v-model="value" class="m-2" placeholder="数值" placement="top" :suffix-icon="IconDropDown">
@@ -1060,7 +1066,7 @@ const data222 = [
     .selectOptions {
       width: vw(224);
       //display: inline-block;
-      //height: vh(28);
+      height: vh(32);
       background: rgba(0, 0, 0, 0.5);
       border-radius: rem(16);
       margin-top: vh(10);
@@ -1342,22 +1348,6 @@ const data222 = [
   }
   .el-input{
     height: vh(24);
-  }
-  .autoWidth-select {
-    min-width: vw(75);
-  }
-  .autoWidth-select >>> .el-input__prefix{
-    position: relative;
-    left: 0;
-    box-sizing: border-box;
-    border: 1px solid #ffffff00;
-    padding: 0 vh(30);
-    height: vh(40);
-    line-height: vh(20);
-    visibility: hidden;
-  }
-  .autoWidth-select >>> input{
-    position: absolute;
   }
 }
 </style>
