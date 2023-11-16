@@ -552,7 +552,7 @@ onMounted(() => {
   {
     /*高德*/
     /*默认地图*/
-    // L.tileLayer.chinaProvider('Geoq.Normal.Gray', {maxZoom: 18, minZoom: 3, subtitle: 'TianDiTu'}).addTo(map);
+    L.tileLayer.chinaProvider('Geoq.Normal.Gray', {maxZoom: 18, minZoom: 3, subtitle: 'TianDiTu'}).addTo(map);
 
     /*卫星地图*/
     // L.tileLayer.chinaProvider('GaoDe.Satellite.Map', {maxZoom: 18, minZoom: 3, subtitle: '高德'}).addTo(map);
@@ -560,12 +560,12 @@ onMounted(() => {
 
 
     /* 黑色map */
-    let url = 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png';
-    L.tileLayer(url, {
-      attribution: 'OSM & Carto',
-      subdomains: 'abcd',
-      maxZoom: 19
-    }).addTo(map);
+    // let url = 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png';
+    // L.tileLayer(url, {
+    //   attribution: 'OSM & Carto',
+    //   subdomains: 'abcd',
+    //   maxZoom: 19
+    // }).addTo(map);
   }
 
   {
