@@ -1,6 +1,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import data from "@/assets/testData/exp.json"
+import output_windData from '@/tools.js'
 import IconDropDown from "@/components/IconDropDown.vue";
 import IconTime from "@/components/IconTime.vue";
 // import icon0 from "@/assets/png/icon0.png";
@@ -113,7 +114,7 @@ import zhenfeng1 from "@/assets/png/whiteIcon/阵风.png";
 //     });
 //   });
 // })
-let map = ref(null)
+// let map = ref(null)
 
 // const VW = (w) => {
 //   return (w / 1920) * 100 + 'vw'
@@ -128,6 +129,8 @@ const VW = (w) => {
 const VH = (h) => {
   return (h / 16) + 'em'
 }
+
+let map = ref(null)
 
 const controlList = [
   {
@@ -534,93 +537,263 @@ const exitFullscreenOrFullscreen = () => {
     document.documentElement.requestFullscreen()
   }
 }
-onMounted(() => {
+
+function initDemoMap() {
+  const Esri_WorldImagery = L.tileLayer(
+      "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      {
+        // attribution:
+        //     "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, " +
+        //     "AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+      }
+  );
+
+  const Esri_DarkGreyCanvas = L.tileLayer(
+      "http://{s}.sm.mapstack.stamen.com/" +
+      "(toner-lite,$fff[difference],$fff[@23],$fff[hsl-saturation@20])/" +
+      "{z}/{x}/{y}.png",
+      {
+        // attribution:
+        //     "Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, " +
+        //     "NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community"
+      }
+  );
+
+  const BlackLayer = L.tileLayer(
+      'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
+      {
+        // attribution: 'OSM & Carto',
+        subdomains: 'abcd',
+        maxZoom: 19
+      })
+
+  const baseLayers = {
+    Satellite: Esri_WorldImagery,
+    "Grey Canvas": Esri_DarkGreyCanvas,
+    "Black Style": BlackLayer
+  }
+
   map = L.map('map', {
-    center: [39.90403, 116.407526],
-    zoom: 10,
+    //   center: [39.90403, 116.407526],
     attributionControl: false,//版权控件添加到地图中
-    zoomControl: false //缩放控件添加到地图中
+    zoomControl: false, //缩放控件添加到地图中
+    // layers: [BlackLayer],
+    zoom: 10,
   }).setView([39.90403, 116.407526], 10);//北京
 
-  // const zoomControl =  L.control.zoom({
-  //   zoomInText:'<div style="color:rgba(47, 128, 237, 1)">+</div>',
-  //   zoomInTitle:'放大',
-  //   zoomOutText:'<div style="color:rgba(47, 128, 237, 1)">-</div>',
-  //   zoomOutTitle:'缩小',
-  // }).addTo(map)
-  // zoomControl.setPosition('topright')
-  {
-    /*高德*/
-    /*默认地图*/
-    L.tileLayer.chinaProvider('Geoq.Normal.Gray', {maxZoom: 18, minZoom: 3, subtitle: 'TianDiTu'}).addTo(map);
+  const layerControl = L.control.layers(baseLayers);
+  layerControl.addTo(map);
 
-    /*卫星地图*/
-    // L.tileLayer.chinaProvider('GaoDe.Satellite.Map', {maxZoom: 18, minZoom: 3, subtitle: '高德'}).addTo(map);
-    // L.tileLayer.chinaProvider('GaoDe.Satellite.Annotion', {maxZoom: 18, minZoom: 3, subtitle: '高德'}).addTo(map);
+  L.tileLayer.chinaProvider('Geoq.Normal.Gray', {maxZoom: 16, minZoom: 3, subtitle: 'TianDiTu'}).addTo(map);
+
+  return {
+    map: map,
+    layerControl: layerControl
+  };
+}
 
 
-    /* 黑色map */
-    // let url = 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png';
-    // L.tileLayer(url, {
-    //   attribution: 'OSM & Carto',
-    //   subdomains: 'abcd',
-    //   maxZoom: 19
-    // }).addTo(map);
-  }
+//地图层
+onMounted(() => {
 
-  {
-    /*当使用map.fitBounds(layer.getBounds())时，地图会根据动画风场的边界自动调整自身的边界，以确保动画风场完全可见。
-      layer.getBounds()返回动画风场图层的边界范围，包括最小经度、最小纬度、最大经度和最大纬度。
-      通过调用map.fitBounds()并传入这个边界范围，地图将自动缩放和平移，使动画风场居中显示，并且整个动画风场都在可视范围内。
-      这样做的好处是可以确保动画风场的所有数据都能在地图上完整显示，而不会被裁剪或超出地图范围。
-      同时，也可以确保地图视野最大程度地覆盖到动画风场的区域，使用户能够更好地观察和交互。
-      请注意，map.fitBounds()是一个Leaflet.js库提供的方法，用于自动调整地图边界。
-      它会根据提供的边界范围计算出最佳的缩放级别和中心点，并将地图调整到这个边界范围内。
-      总结起来，通过调用map.fitBounds(layer.getBounds())，地图会根据动画风场图层的边界自动调整自身的边界，以确保整个动画风场可见，
-      并且最大程度地覆盖到动画风场的区域。*/
+  const mapStuff = initDemoMap();
+  const map = mapStuff.map;
+  const layerControl = mapStuff.layerControl;
 
-    /*此处采用promise获取uv,官网示例使用的d3会不生效*/
-    const httpUrl = window.location.origin + window.location.pathname
-    const url_u = httpUrl + "/Bay_U.asc";
-    const url_v = httpUrl + "/Bay_V.asc";
-    const urls = [url_u, url_v];
-    const promises = urls.map(url => fetch(url).then(r => r.text()));
-    Promise.all(promises).then(function (arrays) {
-      let vf = L.VectorField.fromASCIIGrids(arrays[0], arrays[1]);
-      let layer = L.canvasLayer.vectorFieldAnim(vf).addTo(map);
-      // console.log("🚀 ~ name:layer.getBounds() ", layer.getBounds())
-      map.fitBounds(layer.getBounds());//定位到此处
+  const data = output_windData()
+  map.setView(data.center.uCenter, 10)
+  console.log("🚀 ~ name:data ", data)
 
-      layer.on('click', function (e) {
-        if (e.value !== null) {
-          let vector = e.value;
-          let v = vector.magnitude().toFixed(2);
-          let d = vector.directionTo().toFixed(0);
-          let html = (`${v} m/s to ${d}&deg`);
-          let popup = L.popup()
-              .setLatLng(e.latlng)
-              .setContent(html)
-              .openOn(map);
-        }
-      });
-    });
-  }
-  /*功能区域*/
-  {
-    const popup = L.popup();
+  const velocityLayer = L.velocityLayer({
+    displayValues: true,//在地图上显示风速和方向
+    displayOptions: { //用于配置显示选项的参数，包括风速类型、位置和无数据时的显示信息
+      velocityType: "AAAA",
+      position: "bottomleft",
+      emptyString: "No wind data"
+    },
+    data: data.mergedData,
+    maxVelocity: 15,
+    colorScale: ["rgb(255,41,243)"]
+  });
 
-    function onMapClick(e) {
-      popup
-          .setLatLng(e.latlng)
-          .setContent("You clicked the map at <br>" + e.latlng.toString())
-          .openOn(map);
-    }
+  layerControl.addOverlay(velocityLayer, "测试数据");
+  // velocityLayer.addTo(map);
 
-    map.on('click', onMapClick);
-  }
+// load data (u, v grids) from somewhere (e.g. https://github.com/danwild/wind-js-server)
+
+  fetch("assets/testData/water-gbr.json")
+      .then(response => response.json())
+      .then(data => {
+        const velocityLayer = L.velocityLayer({
+          displayValues: true,
+          displayOptions: {
+            velocityType: "GBR Water",
+            position: "bottomleft",
+            emptyString: "No water current data",
+            showCardinal: true
+          },
+          data: data,
+          maxVelocity: 2
+        });
+
+        layerControl.addOverlay(velocityLayer, "水流 - 大堡礁");
+      })
+      .catch(error => console.error(error));
+
+  fetch("assets/testData/wind-gbr.json")
+      .then(response => response.json())
+      .then(data => {
+        const velocityLayer = L.velocityLayer({
+          displayValues: true,
+          displayOptions: {
+            velocityType: "GBR Water",
+            position: "bottomleft",
+            emptyString: "No water data"
+          },
+          data: data,
+          maxVelocity: 0.6,
+          velocityScale: 0.1, // arbitrary default 0.005
+          colorScale: ["rgb(255,41,243)"]
+        });
+
+        layerControl.addOverlay(velocityLayer, "洋流 - 大堡礁");
+      })
+      .catch(error => console.error(error));
+
+  fetch("assets/testData/wind-global.json")
+      .then(response => response.json())
+      .then(data => {
+        const velocityLayer = L.velocityLayer({
+          displayValues: true,//在地图上显示风速和方向
+          displayOptions: { //用于配置显示选项的参数，包括风速类型、位置和无数据时的显示信息
+            velocityType: "AAAA",
+            position: "bottomleft",
+            emptyString: "No wind data"
+          },
+          data: data,
+          maxVelocity: 15,
+          colorScale: ["rgb(255,41,243)"]
+        });
+
+        layerControl.addOverlay(velocityLayer, "风 - 全球");
+        velocityLayer.addTo(map);
+
+        map.on('click', function (e) {
+          console.log("🚀 ~ name:e ", e)
+          console.log("🚀 ~ name:velocityLayer ", velocityLayer)
+          // if (e.value !== null) {
+          //   let vector = e.value;
+          //   let v = vector.magnitude().toFixed(2);
+          //   let d = vector.directionTo().toFixed(0);
+          //   let html = (`${v} m/s to ${d}&deg`);
+          //   let popup = L.popup()
+          //       .setLatLng(e.latlng)
+          //       .setContent(html)
+          //       .openOn(map);
+          // }
+          if (e.latlng) {
+            // let html = (`${v} m/s to ${d}&deg`);
+            // let popup = L.popup()
+            //     .setLatLng(e.latlng)
+            //     .setContent(html)
+            //     .openOn(map);
+          }
+        });
+      })
+      .catch(error => console.error(error));
 
 
 })
+
+
+// onMounted(() => {
+//   map = L.map('map', {
+//     center: [39.90403, 116.407526],
+//     zoom: 10,
+//     attributionControl: false,//版权控件添加到地图中
+//     zoomControl: false //缩放控件添加到地图中
+//   }).setView([39.90403, 116.407526], 10);//北京
+//
+//   // const zoomControl =  L.control.zoom({
+//   //   zoomInText:'<div style="color:rgba(47, 128, 237, 1)">+</div>',
+//   //   zoomInTitle:'放大',
+//   //   zoomOutText:'<div style="color:rgba(47, 128, 237, 1)">-</div>',
+//   //   zoomOutTitle:'缩小',
+//   // }).addTo(map)
+//   // zoomControl.setPosition('topright')
+//   {
+//     /*高德*/
+//     /*默认地图*/
+//     // console.log("🚀 ~ name:L.tileLayer.chinaProvider ",L)
+//     L.tileLayer.chinaProvider('Geoq.Normal.Gray', {maxZoom: 18, minZoom: 3, subtitle: 'TianDiTu'}).addTo(map);
+//
+//     /*卫星地图*/
+//     // L.tileLayer.chinaProvider('GaoDe.Satellite.Map', {maxZoom: 18, minZoom: 3, subtitle: '高德'}).addTo(map);
+//     // L.tileLayer.chinaProvider('GaoDe.Satellite.Annotion', {maxZoom: 18, minZoom: 3, subtitle: '高德'}).addTo(map);
+//
+//
+//     /* 黑色map */
+//     // let url = 'http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png';
+//     // L.tileLayer(url, {
+//     //   attribution: 'OSM & Carto',
+//     //   subdomains: 'abcd',
+//     //   maxZoom: 19
+//     // }).addTo(map);
+//   }
+//
+//   {
+//     /*当使用map.fitBounds(layer.getBounds())时，地图会根据动画风场的边界自动调整自身的边界，以确保动画风场完全可见。
+//       layer.getBounds()返回动画风场图层的边界范围，包括最小经度、最小纬度、最大经度和最大纬度。
+//       通过调用map.fitBounds()并传入这个边界范围，地图将自动缩放和平移，使动画风场居中显示，并且整个动画风场都在可视范围内。
+//       这样做的好处是可以确保动画风场的所有数据都能在地图上完整显示，而不会被裁剪或超出地图范围。
+//       同时，也可以确保地图视野最大程度地覆盖到动画风场的区域，使用户能够更好地观察和交互。
+//       请注意，map.fitBounds()是一个Leaflet.js库提供的方法，用于自动调整地图边界。
+//       它会根据提供的边界范围计算出最佳的缩放级别和中心点，并将地图调整到这个边界范围内。
+//       总结起来，通过调用map.fitBounds(layer.getBounds())，地图会根据动画风场图层的边界自动调整自身的边界，以确保整个动画风场可见，
+//       并且最大程度地覆盖到动画风场的区域。*/
+//
+//     /*此处采用promise获取uv,官网示例使用的d3会不生效*/
+//     const httpUrl = window.location.origin + window.location.pathname
+//     const url_u = httpUrl + "/Bay_U.asc";
+//     const url_v = httpUrl + "/Bay_V.asc";
+//     const urls = [url_u, url_v];
+//     const promises = urls.map(url => fetch(url).then(r => r.text()));
+//     Promise.all(promises).then(function (arrays) {
+//       let vf = L.VectorField.fromASCIIGrids(arrays[0], arrays[1]);
+//       let layer = L.canvasLayer.vectorFieldAnim(vf).addTo(map);
+//       // console.log("🚀 ~ name:layer.getBounds() ", layer.getBounds())
+//       map.fitBounds(layer.getBounds());//定位到此处
+//
+//       layer.on('click', function (e) {
+//         if (e.value !== null) {
+//           let vector = e.value;
+//           let v = vector.magnitude().toFixed(2);
+//           let d = vector.directionTo().toFixed(0);
+//           let html = (`${v} m/s to ${d}&deg`);
+//           let popup = L.popup()
+//               .setLatLng(e.latlng)
+//               .setContent(html)
+//               .openOn(map);
+//         }
+//       });
+//     });
+//   }
+//   /*功能区域*/
+//   {
+//     const popup = L.popup();
+//
+//     function onMapClick(e) {
+//       popup
+//           .setLatLng(e.latlng)
+//           .setContent("You clicked the map at <br>" + e.latlng.toString())
+//           .openOn(map);
+//     }
+//
+//     map.on('click', onMapClick);
+//   }
+//
+//
+// })
 let selectedID = ref(0)
 const selected = (id) => {
   selectedID.value = id
@@ -823,8 +996,6 @@ function updateSVGChart() {
   progress.attr('width', progressWidth);
   //TODO 更新圆点
   circle.attr('cx', xScale(newDate));//更新位置
-  console.log("🚀 ~ name:xScale(newDate) ", xScale(newDate))
-  console.log("🚀 ~ name:newDate ", newDate)
 }
 
 // createSVGChart();
@@ -935,7 +1106,7 @@ const data222 = [
                    :suffix-icon="IconDropDown"
         >
           <template slot="prefix">
-            {{ (item.childrenOptionsList&&item.childrenOptionsList.find(s => s.value === value) || {}).label }}
+            {{ (item.childrenOptionsList && item.childrenOptionsList.find(s => s.value === value) || {}).label }}
           </template>
           <el-option
               v-for="i in item.childrenOptionsList"
@@ -1346,7 +1517,8 @@ const data222 = [
     color: white;
     font-size: rem(12);
   }
-  .el-input{
+
+  .el-input {
     height: vh(24);
   }
 }

@@ -38,7 +38,7 @@ window.addEventListener('resize', setRem);
 :global(#app) {
   width: 100vw;
   height: 100vh;
-  background-color: #999;
+  background: url("@/assets/png/layerBg.png") repeat;
   pointer-events: none;
 }
 </style>
