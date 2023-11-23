@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Scene from '@/views/Scene.vue'
 import {onMounted} from 'vue'
 import autofit from 'autofit.js'
 
@@ -30,7 +29,6 @@ window.addEventListener('resize', setRem);
 </script>
 
 <template>
-  <!--  <Scene/>-->
   <router-view></router-view>
 </template>
 
