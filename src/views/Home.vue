@@ -6080,7 +6080,6 @@ const testData = {
   max: Math.max(...HeatJson.map(i => i.count)),
   data: HeatJson
 };
-console.log("🚀 ~ name:aaaaaaaaaaaaaa",Math.max(...HeatJson.map(i => i.count)))
 
 const cfg = {
   // radius should be small ONLY if scaleRadius is true (or small radius is intended)

@@ -1,7 +1,7 @@
 import wind_u from '@/assets/testData/wind_u.json'
 import wind_v from '@/assets/testData/wind_v.json'
 
-const dx_dy = 0.00039
+const dx_dy = 0.00039//0.05
 const lo1_u = Math.min(...wind_u.map(i => i.lon))
 const lo2_u = Math.max(...wind_u.map(i => i.lon))
 const la1_u = Math.min(...wind_u.map(i => i.lat))
