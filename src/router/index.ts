@@ -6,7 +6,7 @@ import DataSources_NOAA from "@/views/DataSources_NOAA.vue";
 const routes = [
   { path: "/", component: Home },
   { path: "/d3Demo", component: d3Demo },
-  { path: "/DataSources_NOAA", component: DataSources_NOAA },
+  { path: "/test", component: DataSources_NOAA },
 ]
 
 

@@ -470,13 +470,21 @@ function initDemoMap() {
         // attribution: 'OSM & Carto',
         subdomains: 'abcd',
         maxZoom: 16,
-        minZoom:3
+        minZoom: 3
       })
+
+  const gaode = L.tileLayer.chinaProvider('Geoq.Normal.Gray', {
+    maxZoom: 18,
+    minZoom: 3,
+    subtitle: 'TianDiTu'
+  })
+
 
   const baseLayers = {
     Satellite: Esri_WorldImagery,
     "Grey Canvas": Esri_DarkGreyCanvas,
-    "Black Style": BlackLayer
+    "Black Style": BlackLayer,
+    '高德': gaode
   }
 
   const data = output_windData()
@@ -492,7 +500,7 @@ function initDemoMap() {
 
   const layerControl = L.control.layers(baseLayers);
   //TODO layer控制器
-  // layerControl.addTo(map);
+  layerControl.addTo(map);
 
   return {
     map: map,
@@ -545,8 +553,44 @@ onMounted(() => {
           colorScale: ["rgb(255,41,243)"]
         });
 
+
+        // let html11 = (`中心经度：${data.latLon_Info.uInfo.center[1].toFixed(6)}，中心纬度：${data.latLon_Info.uInfo.center[0].toFixed(6)}`);
+        // let popup11 = L.popup()
+        //     .setLatLng({lat: data.latLon_Info.uInfo.center[0].toFixed(6), lon: data.latLon_Info.uInfo.center[1].toFixed(6)})
+        //     .setContent(html11)
+        //     .addTo(map)
+
+        const lo1 = data[0]['header']['lo1']
+        const lo2 = data[0]['header']['lo2']
+        const la1 = data[0]['header']['la1']
+        const la2 = data[0]['header']['la2']
+        const center = [(la1 + la2) / 2, (lo1 + lo2) / 2]
+
+        let html22 = (`东经：${lo1}，北纬：${la1}`);
+        let popup22 = L.popup()
+            .setLatLng({lat: la1, lon: lo1})
+            .setContent(html22)
+            .addTo(map)
+        let html33 = (`东经：${lo1}，北纬：${la2}`);
+        let popup33 = L.popup()
+            .setLatLng({lat: la2, lon: lo1})
+            .setContent(html33)
+            .addTo(map)
+        let html44 = (`东经：${lo2}，北纬：${la1}`);
+        let popup44 = L.popup()
+            .setLatLng({lat: la1, lon: lo2})
+            .setContent(html44)
+            .addTo(map)
+        let html55 = (`东经：${lo2}，北纬：${la2}`);
+        let popup55 = L.popup()
+            .setLatLng({lat: la2, lon: lo2})
+            .setContent(html55)
+            .addTo(map)
+
         layerControl.addOverlay(velocityLayer, "风 - 全球");
+
         velocityLayer.addTo(map);
+        map.setView(center, 8)
       })
       .catch(error => console.error(error));
 
@@ -601,7 +645,7 @@ onMounted(() => {
   heatmapLayer.setData(testData);
 })
 
-let selectedID = ref(6)
+let selectedID = ref(5)
 const selected = (id) => {
   selectedID.value = id
 }
