@@ -2,7 +2,7 @@
  * heatmap.js v2.0.5 | JavaScript Heatmap Library
  *
  * Copyright 2008-2016 Patrick Wied <heatmapjs@patrick-wied.at> - All rights reserved.
- * Dual licensed under MIT and Beerware license 
+ * Dual licensed under MIT and Beerware license
  *
  * :: 2016-09-05 01:16
  */
@@ -23,13 +23,28 @@
 var HeatmapConfig = {
   defaultRadius: 40,
   defaultRenderer: 'canvas2d',
-  defaultGradient: { 0.25: "rgb(0,0,255)", 0.55: "rgb(0,255,0)", 0.85: "yellow", 1.0: "rgb(255,0,0)"},
+  defaultGradient: {
+    0: "rgb(228, 228, 228)",//-40 ->
+    0.1111:"rgb(243, 165, 243)",//-30 ->
+    0.2222:"rgb(142, 16, 142)",//-20 ->
+    0.2778:"rgb(41, 30, 106)",//-15 ->
+    0.4444:"rgb(86, 80, 171)",//-5  ->
+    0.5:"rgb(65, 120, 190)",//0   ->
+    0.5556:"rgb(78, 177, 149)",//5   ->
+    0.6111:"rgb(91, 201, 76)",//10  ->
+    0.6667:"rgb(183, 218, 64)",//15  ->
+    0.7222:"rgb(225, 206, 57)",//20  ->
+    0.7778:"rgb(219, 108, 84)",//25  ->
+    0.8333:"rgb(184, 53, 103)",//30  ->
+    0.9444:"rgb(107, 21, 39)",//40  ->
+    1:"rgb(43, 0, 1)",//50  ->
+  },
   defaultMaxOpacity: 1,
   defaultMinOpacity: 0,
   defaultBlur: .85,
   defaultXField: 'x',
   defaultYField: 'y',
-  defaultValueField: 'value', 
+  defaultValueField: 'value',
   plugins: {}
 };
 var Store = (function StoreClosure() {
@@ -91,13 +106,13 @@ var Store = (function StoreClosure() {
           }
           return false;
         } else {
-          return { 
-            x: x, 
+          return {
+            x: x,
             y: y,
-            value: value, 
+            value: value,
             radius: radius,
             min: min,
-            max: max 
+            max: max
           };
         }
     },
@@ -138,7 +153,7 @@ var Store = (function StoreClosure() {
           this.addData.call(this, dataArr[dataLen]);
         }
       } else {
-        // add to store  
+        // add to store
         var organisedEntry = this._organiseData(arguments[0], true);
         if (organisedEntry) {
           // if it's the first datapoint initialize the extremas with it
@@ -168,7 +183,7 @@ var Store = (function StoreClosure() {
       }
       this._max = data.max;
       this._min = data.min || 0;
-      
+
       this._onExtremaChange();
       this._coordinator.emit('renderall', this._getInternalData());
       return this;
@@ -192,11 +207,11 @@ var Store = (function StoreClosure() {
       this._coordinator = coordinator;
     },
     _getInternalData: function() {
-      return { 
+      return {
         max: this._max,
-        min: this._min, 
+        min: this._min,
         data: this._data,
-        radi: this._radi 
+        radi: this._radi
       };
     },
     getData: function() {
@@ -230,7 +245,7 @@ var Store = (function StoreClosure() {
                 }
               } else {
                 continue;
-              } 
+              }
             }
           }
         }

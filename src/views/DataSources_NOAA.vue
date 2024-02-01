@@ -1,5 +1,7 @@
 <script setup>
 import HeatJson from '@/assets/testData/T.json'
+import RHTestData from '@/assets/testData/Z_NAFP_C_CUIT_20230501233200_P_RAMS_100M_CD_T_25m_202305020000.json'
+import RHTestData2 from '@/assets/testData/Z_NAFP_C_CUIT_20230501233200_P_RAMS_100M_CD_T_25m_202305020000(1).json'
 import {onMounted, ref} from "vue";
 import IconDropDown from "@/components/IconDropDown.vue";
 import IconTime from "@/components/IconTime.vue";
@@ -7,6 +9,7 @@ import icon0 from "@/assets/png/whiteIcon/icon0.png";
 import icon1 from "@/assets/png/whiteIcon/icon1.png";
 import icon2 from "@/assets/png/whiteIcon/icon2.png";
 import icon3 from "@/assets/png/whiteIcon/icon3.png";
+import icon4 from "@/assets/png/whiteIcon/icon4.png";
 import temperature0 from "@/assets/png/whiteIcon/Vector@2x(4).png"
 import temperature1 from "@/assets/png/whiteIcon/Vector@2x(4).png"
 import precipitation0 from "@/assets/png/whiteIcon/Vector@2x.png"
@@ -25,27 +28,14 @@ import daqiya0 from "@/assets/png/whiteIcon/大气压力.png";
 import daqiya1 from "@/assets/png/whiteIcon/大气压力.png";
 import zhenfeng0 from "@/assets/png/whiteIcon/阵风.png";
 import zhenfeng1 from "@/assets/png/whiteIcon/阵风.png";
-import {getServerData} from "@/axios/api";
-import {output_windData} from "@/tools.js";
-
-const VW = (w) => {
-  return (w / 16) + 'em'
-}
-const VH = (h) => {
-  return (h / 16) + 'em'
-}
+import {contourHeatmapLayer, createHeatmap, HeatmapLayer, output_windData, VH, VW} from "@/tools.js";
+import * as dat from 'dat.gui';
+import {fitBounds} from "@/utils/mapHelper.js";
 
 let map = ref(null)
+let windData = null
 
-const controlList = [
-  {
-    id: 0, icon: icon0, iconW: VW(20), iconH: VH(15.5), fn: () => {
-    }
-  },
-  {id: 1, icon: icon1, iconW: VW(20), iconH: VH(20), fn: () => exitFullscreenOrFullscreen()},
-  {id: 2, icon: icon2, iconW: VW(20), iconH: VH(20), fn: () => zoomControl('+')},
-  {id: 3, icon: icon3, iconW: VW(20), iconH: VH(4), fn: () => zoomControl('-')},
-]
+//a>>theComponentOnTheLeft
 const optionsList = ref([
   {
     id: 0,
@@ -209,7 +199,7 @@ const optionsList = ref([
         label: '10 hPa, 30000 m',
       },
     ], fn: () => {
-      // console.log('2')
+      console.log("🚀 ~ name:'默认地上10米' ")
     }
   },
   {
@@ -223,17 +213,55 @@ const optionsList = ref([
     value: '',
     defaultOption: '',
     childrenOptionsList: [
+      // {
+      //   value: '每小时',
+      //   label: '每小时',
+      //   fn: () => {
+      //     console.log("🚀 ~ name:每小时")
+      //   }
+      // },
+      // {
+      //   value: '开始于10-10 02:00',
+      //   label: '开始于10-10 02:00',
+      //   fn: () => {
+      //     console.log("🚀 ~ name:开始于10-10 02:00")
+      //   }
+      // },
       {
-        value: '每小时',
-        label: '每小时',
-      },
-      {
-        value: '开始于10-10 02:00',
-        label: '开始于10-10 02:00',
+        value: '过去一小时10米',
+        label: '过去一小时10米',
+        fn: () => {
+          console.log("🚀 ~ name:过去一小时10米")
+        }
       },
     ],
     fn: () => {
-      // console.log('0')
+      console.log("🚀 ~ name:'阵风：过去一小时10米' ")
+      fetch("assets/testData/202307211200.json")
+          .then(response => response.json())
+          .then(data => {
+            velocityLayer = null
+            // console.log(data[0]['data'].length)
+            // velocityLayer = L.velocityLayer({
+            //   displayValues: true,//在地图上显示风速和方向
+            //   displayOptions: { //用于配置显示选项的参数，包括风速类型、位置和无数据时的显示信息
+            //     velocityType: "AAAA",
+            //     position: "bottomleft",
+            //     emptyString: "No wind data"
+            //   },
+            //   data: data,
+            //   maxVelocity: 25,
+            //   velocityScale: 0.01,//长度
+            //   particleMultiplier: 0.0002,//数量
+            //   opacity: 0.9,
+            //   colorScale: ["rgb(255,255,255)"],
+            //   particleAge: 90,
+            //   lineWidth: 50,
+            //   frameRate: 20,
+            //   // maxParticles: 1000
+            // });
+          })
+          .catch(error => console.error(error));
     }
   },
   {
@@ -425,7 +453,30 @@ const optionsList = ref([
     }
   },
 ])
+let selectedID = ref(5)
+const selected = (id) => {
+  selectedID.value = id
+}
+const childOptionClick = (i) => {
+  if (i.fn) {
+    i.fn()
+  }
+}
 
+//a>>theComponentOnTheRight
+
+//aListOfComponentLoops
+const controlList = [
+  {
+    id: 0, icon: icon0, iconW: VW(20), iconH: VH(15.5), fn: () => {
+    }
+  },
+  {id: 1, icon: icon1, iconW: VW(20), iconH: VH(20), fn: () => exitFullscreenOrFullscreen()},
+  {id: 2, icon: icon2, iconW: VW(20), iconH: VH(20), fn: () => zoomControl('+')},
+  {id: 3, icon: icon3, iconW: VW(20), iconH: VH(4), fn: () => zoomControl('-')},
+  {id: 4, icon: icon4, iconW: VW(20), iconH: VH(20), fn: () => fitBounds(map, windData)},
+]
+//scaleControlMethod
 const zoomControl = (type) => {
   if (type === '+') {
     map.zoomIn()
@@ -433,8 +484,8 @@ const zoomControl = (type) => {
     map.zoomOut()
   }
 }
-//全屏切换
 
+//全屏切换
 const exitFullscreenOrFullscreen = () => {
   if (document.fullscreenElement) {
     document.exitFullscreen()
@@ -443,6 +494,9 @@ const exitFullscreenOrFullscreen = () => {
   }
 }
 
+//a>>MAP
+
+//init map
 function initDemoMap() {
   const Esri_WorldImagery = L.tileLayer(
       "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -473,10 +527,17 @@ function initDemoMap() {
         minZoom: 3
       })
 
-  const gaode = L.tileLayer.chinaProvider('Geoq.Normal.Gray', {
+
+  const TianDiTu = L.tileLayer.chinaProvider('Geoq.Normal.Gray', {
     maxZoom: 18,
-    minZoom: 3,
+    minZoom: 5,
     subtitle: 'TianDiTu'
+  })
+
+  const GaoDe = L.tileLayer.chinaProvider('GaoDe.Normal.Map', {
+    maxZoom: 18,
+    minZoom: 5,
+    subtitle: 'GaoDe'
   })
 
 
@@ -484,7 +545,8 @@ function initDemoMap() {
     Satellite: Esri_WorldImagery,
     "Grey Canvas": Esri_DarkGreyCanvas,
     "Black Style": BlackLayer,
-    '高德': gaode
+    '天地图': TianDiTu,
+    '高德': GaoDe
   }
 
   const data = output_windData()
@@ -496,7 +558,7 @@ function initDemoMap() {
     zoomControl: false, //缩放控件添加到地图中
     layers: [BlackLayer],
     zoom: 10,
-  }).setView(data.latLon_Info.uInfo.center, 4)
+  }).setView(data.latLon_Info.uInfo.center, 4)//4:亚洲范围 数字越大，地图放大越大，看到范围越小
 
   const layerControl = L.control.layers(baseLayers);
   //TODO layer控制器
@@ -508,151 +570,47 @@ function initDemoMap() {
   };
 }
 
+//风场动画图层
+let velocityLayer = null
 
-//地图层 风场动画
-
-onMounted(() => {
-
-  const mapStuff = initDemoMap();
-  const map = mapStuff.map;
-  const layerControl = mapStuff.layerControl;
-
-  map.on('click', function (e) {
-    console.log("🚀 ~ name:e ", e)
-    // console.log("🚀 ~ name:velocityLayer ", velocityLayer)
-    let vector = e.latlng;
-    // let v = vector.magnitude().toFixed(2);
-    // let d = vector.directionTo().toFixed(0);
-    let html = (`经度：${vector.lng.toFixed(6)}，纬度：${vector.lat.toFixed(6)}`);
-    let popup = L.popup()
-        .setLatLng(e.latlng)
-        .setContent(html)
-        .openOn(map);
-
-    // let html = (`${v} m/s to ${d}&deg`);
-    // let popup = L.popup()
-    //     .setLatLng(e.latlng)
-    //     .setContent(html)
-    //     .openOn(map);
-  });
-
-
-  fetch("assets/testData/202307211200.json")
-      .then(response => response.json())
-      .then(data => {
-        console.log(data[0]['data'].length)
-        const velocityLayer = L.velocityLayer({
-          displayValues: true,//在地图上显示风速和方向
-          displayOptions: { //用于配置显示选项的参数，包括风速类型、位置和无数据时的显示信息
-            velocityType: "AAAA",
-            position: "bottomleft",
-            emptyString: "No wind data"
-          },
-          data: data,
-          maxVelocity: 15,
-          colorScale: ["rgb(255,41,243)"]
-        });
-
-
-        // let html11 = (`中心经度：${data.latLon_Info.uInfo.center[1].toFixed(6)}，中心纬度：${data.latLon_Info.uInfo.center[0].toFixed(6)}`);
-        // let popup11 = L.popup()
-        //     .setLatLng({lat: data.latLon_Info.uInfo.center[0].toFixed(6), lon: data.latLon_Info.uInfo.center[1].toFixed(6)})
-        //     .setContent(html11)
-        //     .addTo(map)
-
-        const lo1 = data[0]['header']['lo1']
-        const lo2 = data[0]['header']['lo2']
-        const la1 = data[0]['header']['la1']
-        const la2 = data[0]['header']['la2']
-        const center = [(la1 + la2) / 2, (lo1 + lo2) / 2]
-
-        let html22 = (`东经：${lo1}，北纬：${la1}`);
-        let popup22 = L.popup()
-            .setLatLng({lat: la1, lon: lo1})
-            .setContent(html22)
-            .addTo(map)
-        let html33 = (`东经：${lo1}，北纬：${la2}`);
-        let popup33 = L.popup()
-            .setLatLng({lat: la2, lon: lo1})
-            .setContent(html33)
-            .addTo(map)
-        let html44 = (`东经：${lo2}，北纬：${la1}`);
-        let popup44 = L.popup()
-            .setLatLng({lat: la1, lon: lo2})
-            .setContent(html44)
-            .addTo(map)
-        let html55 = (`东经：${lo2}，北纬：${la2}`);
-        let popup55 = L.popup()
-            .setLatLng({lat: la2, lon: lo2})
-            .setContent(html55)
-            .addTo(map)
-
-        layerControl.addOverlay(velocityLayer, "风 - 全球");
-
-        velocityLayer.addTo(map);
-        map.setView(center, 8)
-      })
-      .catch(error => console.error(error));
-
-  // getServerData({})
-  //     // .then(response => response.json())
-  //     .then(data => {
-  //       console.log("🚀 ~ name:data ", data)
-  //       const velocityLayer = L.velocityLayer({
-  //         displayValues: true,//在地图上显示风速和方向
-  //         displayOptions: { //用于配置显示选项的参数，包括风速类型、位置和无数据时的显示信息
-  //           velocityType: "AAAA",
-  //           position: "bottomleft",
-  //           emptyString: "No wind data"
-  //         },
-  //         data: data.data,
-  //         maxVelocity: 15,
-  //         colorScale: ["rgb(255,255,255)"]
-  //       });
-  //
-  //       velocityLayer.addTo(map);
-  //     })
-  //     .catch(error => console.error(error));
-})
-
-// 热力图层
+//热力图层
+let heatmapLayer = null
+const heatData = RHTestData.data
+const heatData2 = RHTestData2.data
+const MYheatData = HeatJson
 const testData = {
-  max: Math.max(...HeatJson.map(i => i.count)),
-  data: HeatJson
+  // max: Math.max(...heatData.map(i => i.count)),
+  max: 200,
+  data: heatData
 };
+// const cfg = {
+//   // radius should be small ONLY if scaleRadius is true (or small radius is intended)
+//   // if scaleRadius is false it will be the constant radius used in pixels
+//   // 整数 *可选* 默认 15
+//   // 定义数据点的半径。重要提示：如果scaleRadius为假，则半径以像素为单位测量。如果scaleRadius为true，则按照地图的比例进行测量。
+//   "radius": 4,
+//   "maxOpacity": 0.2,
+//   // boolean *可选* 默认 false
+//   // 是否应根据缩放级别缩放半径
+//   "scaleRadius": false,
+//   // if set to false the heatmap uses the global maximum for colorization
+//   // if activated: uses the data maximum within the current map boundaries
+//   //   (there will always be a red spot with useLocalExtremas true)
+//   "useLocalExtrema": true,
+//   // which field name in your data represents the latitude - default "lat"
+//   latField: 'lat',
+//   // which field name in your data represents the longitude - default "lng"
+//   lngField: 'lon',
+//   // which field name in your data represents the data value - default "value"
+//   valueField: 'count'
+// };
 
-const cfg = {
-  // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-  // if scaleRadius is false it will be the constant radius used in pixels
-  "radius": 2,
-  "maxOpacity": .2,
-  // scales the radius based on map zoom
-  "scaleRadius": true,
-  // if set to false the heatmap uses the global maximum for colorization
-  // if activated: uses the data maximum within the current map boundaries
-  //   (there will always be a red spot with useLocalExtremas true)
-  "useLocalExtrema": true,
-  // which field name in your data represents the latitude - default "lat"
-  latField: 'lat',
-  // which field name in your data represents the longitude - default "lng"
-  lngField: 'lon',
-  // which field name in your data represents the data value - default "value"
-  valueField: 'count'
-};
-onMounted(() => {
-  const heatmapLayer = new window.HeatmapOverlay(cfg)
-  // heatmapLayer.addTo(map)
-  heatmapLayer.setData(testData);
-})
+//d3 等高线热力图层
+let heatmapLayer_d3 = null
 
-let selectedID = ref(5)
-const selected = (id) => {
-  selectedID.value = id
-}
+//a>>bottomComponent
 const value = ref('')
-
 const date = ref(new Date())
-
 let selectedTime = ref()
 
 let svg = null
@@ -666,8 +624,41 @@ let circle = null
 // 定义时间范围
 let startDate = new Date('2020-01-01');
 let endDate = new Date('2020-01-02');
+
+endDate = new Date();
+//获取最新时间的前6个小时时间
+startDate = new Date(endDate.getTime() - 6 * 60 * 60 * 1000);
+
 let cx
 let newDate = startDate
+
+// 计算并显示对应时间
+const calcHourlyTime = (x) => {
+  const date = xScale.invert(x);
+  const minute = date.getMinutes();
+  if (minute >= 30) {
+    date.setHours(date.getHours() + 1, 0, 0, 0);
+  } else {
+    date.setMinutes(0, 0, 0);
+  }
+  return date
+}
+
+const calcHourlyTime2 = (date) => {
+  // 计算出当前时间的分钟数
+  const minute = date.getMinutes();
+  // 如果分钟数大于等于30，则将小时数加1，并将分钟数设置为0
+  if (minute >= 30) {
+    date.setHours(date.getHours() + 1, 0, 0, 0);
+  }
+  // 如果分钟数小于30，则将分钟数设置为0
+  else {
+    date.setMinutes(0, 0, 0);
+  }
+  // 使用 xScale() 方法计算出对应的 x 坐标
+  // 返回计算出的 x 坐标
+  return xScale(date);
+}
 
 function createSVGChart() {
 
@@ -687,7 +678,7 @@ function createSVGChart() {
       .tickFormat(d3.timeFormat('%H:%M'))
       .tickPadding(10)
       .tickSizeOuter(0)
-  // .ticks(20); // ticks刻度值的个数
+      .ticks(6); // ticks刻度值的个数
 
 
 // 渲染D3时间轴
@@ -709,7 +700,7 @@ function createSVGChart() {
 
   // 获取svg高度
   const svgHeight = svg.node().getBoundingClientRect().height;
-// 添加黑色背景
+  // 添加黑色背景
   svg.insert('rect', ':first-child')
       .attr('x', 0)
       .attr('y', 34.5)
@@ -718,7 +709,7 @@ function createSVGChart() {
       .style('fill', 'rgba(0,0,0,0.333)')
       .style('pointer-events', 'none');
 
-//添加进度条
+  //添加进度条
   progress = svg.append('rect')
       .attr('x', xScale(startDate))
       .attr('y', 36.5)
@@ -744,42 +735,6 @@ function createSVGChart() {
       .style('cursor', 'e-resize')
   // .style('pointer-events', 'none');
 
-  // 鼠标点击事件
-  circle.on('click', function () {
-    console.log("🚀 ~ name:111", '111')
-  });
-
-  circle.on('mousemove', function () {
-
-  });
-
-  //点击事件 更新圆点以及进度条
-  svg.select('g')
-      .on('click', function (event) {
-        cx = d3.pointer(event)[0];//位置
-        newDate = xScale.invert(cx);//计算日期
-        circle.attr('cx', xScale(newDate));//更新位置
-        console.log("🚀 ~ name:cx ", cx)
-
-
-        progressWidth = cx - xScale(startDate);
-        progress.attr('width', progressWidth);
-      });
-
-
-// 拖动事件 更新圆点以及进度条
-  circle.call(d3.drag()
-      .on('drag', function (event) {
-        cx = event.x;
-        cx = Math.max(Math.min(cx, svgWidth - 20), 20); // 限制拖动范围在时间轴范围内
-        d3.select(this).attr('cx', cx)//更新圆点
-
-        newDate = xScale.invert(cx);
-        progressWidth = xScale(newDate) - xScale(startDate);
-        progress.attr('width', progressWidth);//更新进度条
-      })
-  );
-
   // 添加提示框
   const tooltip = svg.append('g')
       .attr('transform', 'translate(0, 35)');
@@ -801,15 +756,92 @@ function createSVGChart() {
       .style('opacity', 0)
       .style('fill', 'white')
 
-// 鼠标悬停事件
+  // 鼠标点击事件
+  circle.on('click', function () {
+    console.log("🚀 ~ name:111", '111')
+  });
+
+  circle.on('mousemove', function () {
+
+  });
+
+  //点击事件 更新圆点以及进度条
+  svg.select('g')
+      .on('click', function (event) {
+        cx = d3.pointer(event)[0];//位置
+        newDate = xScale.invert(cx);//计算日期
+        circle.attr('cx', xScale(newDate))//更新位置
+            .transition()
+            .duration(1000)
+            .delay(200)
+            .ease(d3.easeExpOut)
+            .attr('cx', () => {
+              newDate = calcHourlyTime(cx)
+              return xScale(newDate)
+            })
+
+        progressWidth = cx - xScale(startDate);
+        progress.attr('width', progressWidth)//更新进度条
+            .transition()
+            .duration(1000)
+            .delay(200)
+            .ease(d3.easeExpOut)
+            .attr('width', () => {
+              const new_cx = calcHourlyTime2(newDate)
+              return new_cx - xScale(startDate);
+            })
+        // setTimeout(() => {
+        //   newDate = calcHourlyTime(cx)
+        //   circle.attr('cx', xScale(newDate))
+        //
+        //   const new_cx = calcHourlyTime2(newDate)
+        //   progressWidth = new_cx - xScale(startDate);
+        //   progress.attr('width', progressWidth);//更新进度条
+        // }, 1000)
+      });
+
+
+  // 拖动事件 更新圆点以及进度条
+  circle.call(d3.drag()
+      .on('drag', function (event) {
+        cx = event.x;
+        cx = Math.max(Math.min(cx, svgWidth - 20), 20); // 限制拖动范围在时间轴范围内
+        d3.select(this).attr('cx', cx); //更新圆点
+
+        newDate = xScale.invert(cx);
+        progressWidth = xScale(newDate) - xScale(startDate);
+        progress.attr('width', progressWidth); //更新进度条
+      })
+      .on('end', function (event) { // 拖动结束后的动画
+        d3.select(this)
+            .transition()
+            .duration(1000)
+            .delay(200)
+            .ease(d3.easeExpOut)
+            .attr('cx', () => {
+              newDate = calcHourlyTime(cx);
+              return xScale(newDate);
+            });
+
+        progress
+            .transition()
+            .duration(1000)
+            .delay(200)
+            .ease(d3.easeExpOut)
+            .attr('width', () => {
+              const new_cx = calcHourlyTime2(newDate);
+              return new_cx - xScale(startDate);
+            });
+      }));
+
+  // 鼠标悬停事件
   svg.select('.domain').on('mousemove', function (event) {
 
     // 计算提示框位置
     const mouseX = d3.pointer(event)[0];
     const x = mouseX - 30;
 
-    // 计算并显示对应时间
-    const date = xScale.invert(mouseX);
+    const date = calcHourlyTime(mouseX)
     tooltipText.text(d3.timeFormat('%H:%M')(date));
 
     // 显示提示框
@@ -880,11 +912,6 @@ window.addEventListener('resize', updateSVGChart);
 //   progress.attr('width', progressWidth);
 // });
 
-
-onMounted(() => {
-  // value.value = optionsList.value[0].childrenOptionsList[1].value
-  createSVGChart()
-})
 // 模拟数据
 const data222 = [
   {time: new Date('2020-01-01 12:00'), value: 10},
@@ -921,6 +948,216 @@ const data222 = [
 //     svg.selectAll('.tick')
 //         .attr('font-weight', d => d > selectedTime.value ? 'bold' : 'normal');
 //   }
+
+onMounted(() => {
+  //a>>init && load map
+  const mapStuff = initDemoMap();
+  const map = mapStuff.map;
+  const layerControl = mapStuff.layerControl;
+
+  map.on('click', function (e) {
+    // console.log("🚀 ~ name:e ", e)
+    // console.log("🚀 ~ name:velocityLayer ", velocityLayer)
+    let vector = e.latlng;
+    // let v = vector.magnitude().toFixed(2);
+    // let d = vector.directionTo().toFixed(0);
+    let html = (`经度：${vector.lng.toFixed(6)}，纬度：${vector.lat.toFixed(6)}`);
+    let popup = L.popup()
+        .setLatLng(e.latlng)
+        .setContent(html)
+        .openOn(map);
+
+    // let html = (`${v} m/s to ${d}&deg`);
+    // let popup = L.popup()
+    //     .setLatLng(e.latlng)
+    //     .setContent(html)
+    //     .openOn(map);
+  });
+
+  //a>>风场动画图层
+  fetch("assets/testData/202307211200.json")
+  // fetch("assets/testData/chushi.json")
+  // fetch("assets/testData/wind_uv.json")
+  // fetch("assets/testData/Z_NAFP_C_CUIT_20230501233200_P_RAMS_100M_CD_UV_500m_202305020159.json")
+  // fetch("assets/rams/00-03/UV/202305020000/Z_NAFP_C_CUIT_20230501233200_P_RAMS_100M_CD_UV_0m_202305020000.json")
+      .then(response => response.json())
+      .then(data => {
+        windData = data
+        // console.log(data[0]['data'].length)
+        velocityLayer = L.velocityLayer({
+          displayValues: true,//在地图上显示风速和方向
+          displayOptions: { //用于配置显示选项的参数，包括风速类型、位置和无数据时的显示信息
+            velocityType: "AAAA",
+            position: "bottomleft",
+            emptyString: "No wind data"
+          },
+          data: data,
+          maxVelocity: 25,
+          velocityScale: 0.01,//长度
+          particleMultiplier: 0.01,//数量
+          opacity: 0.9,
+          colorScale: ["rgb(255,255,255)"],
+          particleAge: 90,
+          lineWidth: 3,
+          frameRate: 20,
+          // maxParticles: 1000
+        });
+
+        //TODO GUI调试
+        // // 创建 GUI 控制器实例
+        // const gui = new dat.GUI();
+        //
+        // // 创建一个对象来存储你的参数
+        // const params = {
+        //   maxVelocity: 15,
+        //   velocityScale: 0.01,
+        //   particleMultiplier: 0.0001,
+        //   opacity: 1,
+        //   colorScale: "rgba(241,153,153,1)",
+        //   particleAge: 90,
+        //   lineWidth: 2,
+        //   frameRate: 20,
+        //   maxParticles: 1000
+        // };
+        //
+        // // 添加 GUI 控制器
+        // gui.add(params, 'maxVelocity', 0, 30).onChange(updateParticles);
+        // gui.add(params, 'velocityScale', 0, 0.1).onChange(updateParticles);
+        // gui.add(params, 'particleMultiplier', 0, 0.001).onChange(updateParticles);
+        // gui.add(params, 'opacity', 0, 1).onChange(updateParticles);
+        // gui.addColor(params, 'colorScale').onChange(updateParticles);
+        // gui.add(params, 'particleAge', 0, 180).onChange(updateParticles);
+        // gui.add(params, 'lineWidth', 0, 10).onChange(updateParticles);
+        // gui.add(params, 'frameRate', 0, 60).onChange(updateParticles);
+        // gui.add(params, 'maxParticles', 0, 2000).onChange(updateParticles);
+        //
+        // // 更新粒子效果
+        // function updateParticles() {
+        //   // 获取参数值
+        //   const { maxVelocity, velocityScale, particleMultiplier, opacity, colorScale, particleAge, lineWidth, frameRate, maxParticles } = params;
+        //
+        //   // 更新 velocityLayer 对象的选项
+        //   params.maxVelocity = maxVelocity;
+        //   params.velocityScale = velocityScale;
+        //   params.particleMultiplier = particleMultiplier;
+        //   params.opacity = opacity;
+        //   params.colorScale = colorScale;
+        //   params.particleAge = particleAge;
+        //   params.lineWidth = lineWidth;
+        //   params.frameRate = frameRate;
+        //   params.maxParticles = maxParticles;
+        //
+        //   // 更新 velocityLayer 对象的数据
+        //   console.log("🚀 ~ name:velocityLayer.options.opacity ",velocityLayer)
+        //   velocityLayer.setOptions(params);
+        //   // velocityLayer.setData(data);
+        // }
+
+        // const lo1 = data[0]['header']['lo1']
+        // const lo2 = data[0]['header']['lo2']
+        // const la1 = data[0]['header']['la1']
+        // const la2 = data[0]['header']['la2']
+        // const center = [(la1 + la2) / 2, (lo1 + lo2) / 2]
+
+        // const lo1 = data[0]['header']['lo1']
+        // const lo2 = data[0]['header']['lo2']
+        // const la1 = data[0]['header']['la1']
+        // const la2 = data[0]['header']['la2']
+        //
+        // //TODO 范围测试
+        // // 范围标签--左上角
+        // let html_u_l_corner = (`左上角：${lo1},${la1}`);
+        // let popup_u_l_corner = L.popup()
+        //     .setLatLng({lat: la1, lon: lo1})
+        //     .setContent(html_u_l_corner)
+        //     .addTo(map)
+        // // 范围标签--右下角
+        // let html_b_r_corner = (`右下角：${lo2},${la2}`);
+        // let popup_b_r_corner = L.popup()
+        //     .setLatLng({lat: la2, lon: lo2})
+        //     .setContent(html_b_r_corner)
+        //     .addTo(map)
+
+        layerControl.addOverlay(velocityLayer, "风 - 全球");
+
+        // velocityLayer.addTo(map);
+
+
+        // map.setView(center, 8)
+        // fitBounds(map, data)
+      })
+      .catch(error => console.error(error));
+
+  // getServerData({})
+  //     // .then(response => response.json())
+  //     .then(data => {
+  //       console.log("🚀 ~ name:data ", data)
+  //       const velocityLayer = L.velocityLayer({
+  //         displayValues: true,//在地图上显示风速和方向
+  //         displayOptions: { //用于配置显示选项的参数，包括风速类型、位置和无数据时的显示信息
+  //           velocityType: "AAAA",
+  //           position: "bottomleft",
+  //           emptyString: "No wind data"
+  //         },
+  //         data: data.data,
+  //         maxVelocity: 15,
+  //         colorScale: ["rgb(255,255,255)"]
+  //       });
+  //
+  //       velocityLayer.addTo(map);
+  //     })
+  //     .catch(error => console.error(error));
+
+  //a>>热力图图层
+  const lo1 = RHTestData['header']['lo1']
+  const lo2 = RHTestData['header']['lo2']
+  const la1 = RHTestData['header']['la1']
+  const la2 = RHTestData['header']['la2']
+
+  //TODO 范围测试
+  // 范围标签--左上角
+  let html_u_l_corner = (`左上角：${lo1},${la1}`);
+  let popup_u_l_corner = L.popup()
+      .setLatLng({lat: la1, lon: lo1})
+      .setContent(html_u_l_corner)
+      .addTo(map)
+  // 范围标签--右下角
+  let html_b_r_corner = (`右下角：${lo2},${la2}`);
+  let popup_b_r_corner = L.popup()
+      .setLatLng({lat: la2, lon: lo2})
+      .setContent(html_b_r_corner)
+      .addTo(map)
+
+
+  const cfg = {
+    // radius should be small ONLY if scaleRadius is true (or small radius is intended)
+    // if scaleRadius is false it will be the constant radius used in pixels
+    "radius": 15,
+    "maxOpacity": .8,
+    // scales the radius based on map zoom
+    "scaleRadius": false,
+    // if set to false the heatmap uses the global maximum for colorization
+    // if activated: uses the data maximum within the current map boundaries
+    //   (there will always be a red spot with useLocalExtremas true)
+    "useLocalExtrema": false,
+    // which field name in your data represents the latitude - default "lat"
+    latField: 'lat',
+    // which field name in your data represents the longitude - default "lng"
+    lngField: 'lon',
+    // which field name in your data represents the data value - default "value"
+    valueField: 'count'
+  };
+
+  heatmapLayer = new window.HeatmapOverlay(cfg)
+  heatmapLayer.addTo(map)
+  heatmapLayer.setData(testData);
+  windData = RHTestData
+  fitBounds(map,RHTestData)
+
+  //a>>底部
+  createSVGChart()
+})
+
 </script>
 
 <template>
@@ -944,16 +1181,6 @@ const data222 = [
       </div>
       <div class="selectOptions" v-show="item.id ===selectedID&&item.childrenOptionsList">
         <div class="typeName"><span>{{ item.typeName }}</span></div>
-        <!--                <el-select v-model="item.value" :placeholder="item.childrenOptionsList&&item.childrenOptionsList[0].value"-->
-        <!--                           size="small" :suffix-icon="IconDropDown"-->
-        <!--                >-->
-        <!--                  <el-option-->
-        <!--                      v-for="i in item.childrenOptionsList"-->
-        <!--                      :key="i.value"-->
-        <!--                      :label="i.label"-->
-        <!--                      :value="i.value"-->
-        <!--                  />-->
-        <!--                </el-select>-->
         <el-select class="autoWidth-select" v-model="item.value"
                    :placeholder="item.childrenOptionsList&&item.childrenOptionsList[0].value"
                    :suffix-icon="IconDropDown"
@@ -965,7 +1192,9 @@ const data222 = [
               v-for="i in item.childrenOptionsList"
               :key="i.value"
               :label="i.label"
-              :value="i.value">
+              :value="i.value"
+              @click="childOptionClick(i)"
+          >
           </el-option>
         </el-select>
       </div>
