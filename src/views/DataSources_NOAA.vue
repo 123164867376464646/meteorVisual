@@ -32,6 +32,7 @@ import {contourHeatmapLayer, createHeatmap, HeatmapLayer, output_windData, VH, V
 import * as dat from 'dat.gui';
 import {fitBounds, result} from "@/utils/mapHelper.js";
 import {ElMessageBox} from "element-plus";
+import {initDays} from "@/utils/day.js";
 
 let map = ref(null)
 let windData = null
@@ -468,9 +469,11 @@ const childOptionClick = (i) => {
 const radio1 = ref('Option 1')
 const drawer2 = ref(false)
 const direction = ref('ltr')
+
 function cancelClick() {
   drawer2.value = false
 }
+
 function confirmClick() {
   ElMessageBox.confirm(`Are you confirm to chose ${radio1.value} ?`)
       .then(() => {
@@ -937,6 +940,37 @@ const data222 = [
   //...
 ];
 
+//b>>移动端时间轴
+// var date1 = new Date();
+// var daysOfWeek = ['日', '一', '二', '三', '四', '五', '六'];
+// var dayOfWeek = daysOfWeek[date1.getDay()];
+// var month = date1.getMonth() + 1; // 注意月份是从0开始的，所以要加1
+// var dayOfMonth = date1.getDate();
+//
+// // 添加前导零
+// if (dayOfMonth < 10) {
+//   dayOfMonth = '0' + dayOfMonth;
+// }
+//
+// console.log('星期' + dayOfWeek);
+// console.log('月份：' + month);
+// console.log('日期：' + dayOfMonth);
+//
+//
+// const days = ref(['','','','日', '一', '二', '三', '四', '五', '六','','','',])
+//
+// const _arr = ref([{dayOfWeek:'日',month:'2月',dayOfMonth:'01'}])
+//
+// const hours = Array.from(Array(24).keys())
+// const selectedHour = ref(null)
+// const selectHour = (hour) => {
+//   selectedHour.value = hour
+// }
+
+const days = ref([]);
+const isActive_cur_day = ref('')
+
+
 // 点击回调函数
 //   function onclick(d) {
 //     selectedTime.value = d;
@@ -966,7 +1000,6 @@ const data222 = [
 //     svg.selectAll('.tick')
 //         .attr('font-weight', d => d > selectedTime.value ? 'bold' : 'normal');
 //   }
-const isPhone = ref('')
 onMounted(() => {
   //a>>init && load map
   const mapStuff = initDemoMap();
@@ -1190,14 +1223,16 @@ onMounted(() => {
 
   //a>>底部
   createSVGChart()
+  //移动端初始化时间
+  initDays(days.value,isActive_cur_day.value)
 })
 
 </script>
 
 <template>
-<!--  <div class="heatmapWrapper">-->
-<!--    <canvas id="heatmap"></canvas>-->
-<!--  </div>-->
+  <!--  <div class="heatmapWrapper">-->
+  <!--    <canvas id="heatmap"></canvas>-->
+  <!--  </div>-->
   <div id="map"></div>
 
   <div class="left-wrapper">
@@ -1234,11 +1269,12 @@ onMounted(() => {
       </div>
     </div>
   </div>
-<!--  抽屉-->
+  <!--  抽屉-->
   <el-drawer size="60%" style="pointer-events: auto;" v-model="drawer2" :direction="direction">
     <template #default>
       <div class="left-wrapper-drawers">
-        <div class="item" :class="{ active: item.id ===selectedID  }" @click="selected(item.id);item.fn();drawer2=false;"
+        <div class="item" :class="{ active: item.id ===selectedID  }"
+             @click="selected(item.id);item.fn();drawer2=false;"
              v-for="item in optionsList"
              :key="item.id">
           <div class="item_layout">
@@ -1274,7 +1310,9 @@ onMounted(() => {
     </template>
   </el-drawer>
   <div class="left-wrapper-mobile">
-    <div class="item" v-show="item.id ===selectedID" :class="{ active: item.id ===selectedID,hidden: item.id !== selectedID  }" @click="selected(item.id);item.fn();drawer2 = true"
+    <div class="item" v-show="item.id ===selectedID"
+         :class="{ active: item.id ===selectedID,hidden: item.id !== selectedID  }"
+         @click="selected(item.id);item.fn();drawer2 = true"
          v-for="item in optionsList"
          :key="item.id">
       <div class="item_layout">
@@ -1350,6 +1388,21 @@ onMounted(() => {
             :value="item.value"
         />
       </el-select>
+    </div>
+  </div>
+  <div class="bottom-wrapper-mobile">
+    <div class="time-picker">
+      <div class="day-picker">
+        <div v-for="day in days" :key="day" class="day sizeItem">
+          <div class="dayOfWeek">{{ day.dayOfWeek }}</div>
+          <div :class="isActive_cur_day=== day.dayOfMonth? 'isCurDay_top_border' : ''" class="month-dayOfMonth">{{ day.month }}{{ day.dayOfMonth }}</div>
+        </div>
+      </div>
+      <!--      <div class="hour-picker">-->
+      <!--        <div v-for="hour in hours" :key="hour" class="hour sizeItem" @click="selectHour(hour)"-->
+      <!--             :class="{ 'selected': selectedHour === hour }">{{ hour }}-->
+      <!--        </div>-->
+      <!--      </div>-->
     </div>
   </div>
 </template>
@@ -1482,6 +1535,7 @@ onMounted(() => {
     background: rgba(19, 115, 235, 0.6);
   }
 }
+
 .left-wrapper-mobile {
   cursor: pointer;
   z-index: 999;
@@ -1591,6 +1645,7 @@ onMounted(() => {
   }
 
   .item.active .icon-info {
+    animation: zoomIn 0.5s;
     background: #1373eb;
   }
 
@@ -1598,6 +1653,7 @@ onMounted(() => {
     background: rgba(19, 115, 235, 0.6);
   }
 }
+
 .left-wrapper-drawers {
   cursor: pointer;
   z-index: 999;
@@ -1881,13 +1937,88 @@ onMounted(() => {
   }
 }
 
+.bottom-wrapper-mobile {
+  width: 100%;
+  height: 100px;
+  pointer-events: all;
+  position: absolute;
+  z-index: 999;
+  bottom: 0;
+
+  .sizeItem {
+    background: rgba(0, 0, 0, .65);
+    width: calc(100% / 7);
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    text-shadow: 1px 1px 3px rgba(0,0,0,.4);
+  }
+
+  .time-picker {
+    width: 100%;
+    height: 11.521vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .day-picker {
+    display: flex;
+    width: calc(100% * 24 / 7);
+    justify-content: space-between;
+  }
+
+  .day {
+    justify-content: space-evenly;
+
+    .dayOfWeek {
+      font-size: 100%;
+      font-weight: 800;
+    }
+
+    .month-dayOfMonth {
+      font-size: 90%;
+    }
+    .isCurDay_top_border{
+      border:1px solid red;
+    }
+  }
+
+  .hour-picker {
+    display: flex;
+    width: calc(100% * 3);
+    justify-content: space-between;
+    outline: 1px solid #000;
+  }
+
+  .hour {
+    flex-basis: calc(100% / 6);
+    max-width: calc(100% / 6);
+  }
+
+  .selected {
+    background-color: #2196F3;
+    color: #fff;
+  }
+}
+
 @media screen and (max-width: 960px) {
-  .right-wrapper,.bottom-wrapper,.left-wrapper{
+  .left-wrapper {
+    animation: zoomOut 0.5s;
+  }
+  .right-wrapper, .bottom-wrapper, .left-wrapper {
     display: none;
   }
 }
+
 @media screen and (min-width: 960px) {
-  .left-wrapper-mobile{
+  .left-wrapper-mobile, .bottom-wrapper-mobile {
     display: none;
   }
 }
@@ -1896,7 +2027,7 @@ onMounted(() => {
 </style>
 <style lang="scss">
 
-.left-wrapper ,.left-wrapper-mobile,.left-wrapper-drawers{
+.left-wrapper, .left-wrapper-mobile, .left-wrapper-drawers {
   .el-select {
     --el-select-input-focus-border-color: none;
     display: flex;
