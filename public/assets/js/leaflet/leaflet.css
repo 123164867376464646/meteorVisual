@@ -258,7 +258,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 /* visual tweaks */
 
 .leaflet-container {
-	background: url("/assets/img/layerBg.png") repeat;
+	background: url("./images/layerBg.png") repeat;
 	outline-offset: 1px;
 	}
 .leaflet-container a {

@@ -6,8 +6,8 @@
  * @returns {void}
  */
 export function fitBounds(map, data) {
-    let corner1,corner2
-    if(Array.isArray(data)){
+    let corner1, corner2
+    if (Array.isArray(data)) {
         corner1 = L.latLng(
             data[0]['header']['la1'],
             data[0]['header']['lo1']
@@ -16,7 +16,7 @@ export function fitBounds(map, data) {
             data[0]['header']['la2'],
             data[0]['header']['lo2']
         )
-    }else {
+    } else {
         corner1 = L.latLng(
             data['header']['la1'],
             data['header']['lo1']
@@ -32,4 +32,19 @@ export function fitBounds(map, data) {
         corner1, corner2
     );
     map.fitBounds(bounds);
+}
+
+
+//返回其他要素格式数据
+export const result = (sourceData) => {
+    return sourceData.reduce((acc, cur,index) => {
+        const {lat, lon, count} = cur
+        if(index%2===0){
+            acc.push([lat, lon, 0]);
+        }else {
+            acc.push([lat, lon, 1]);
+        }
+
+        return acc;
+    }, []);
 }

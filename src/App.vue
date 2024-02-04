@@ -37,6 +37,6 @@ window.addEventListener('resize', setRem);
   width: 100vw;
   height: 100vh;
   background: url("@/assets/png/layerBg.png") repeat;
-  pointer-events: none;
+  //pointer-events: none;
 }
 </style>

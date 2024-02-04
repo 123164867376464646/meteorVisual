@@ -246,4 +246,3 @@
 
     return HeatmapOverlay;
 });
-window.HeatmapOverlay = HeatmapOverlay

@@ -30,7 +30,8 @@ import zhenfeng0 from "@/assets/png/whiteIcon/阵风.png";
 import zhenfeng1 from "@/assets/png/whiteIcon/阵风.png";
 import {contourHeatmapLayer, createHeatmap, HeatmapLayer, output_windData, VH, VW} from "@/tools.js";
 import * as dat from 'dat.gui';
-import {fitBounds} from "@/utils/mapHelper.js";
+import {fitBounds, result} from "@/utils/mapHelper.js";
+import {ElMessageBox} from "element-plus";
 
 let map = ref(null)
 let windData = null
@@ -463,6 +464,23 @@ const childOptionClick = (i) => {
   }
 }
 
+//b>>左侧抽屉
+const radio1 = ref('Option 1')
+const drawer2 = ref(false)
+const direction = ref('ltr')
+function cancelClick() {
+  drawer2.value = false
+}
+function confirmClick() {
+  ElMessageBox.confirm(`Are you confirm to chose ${radio1.value} ?`)
+      .then(() => {
+        drawer2.value = false
+      })
+      .catch(() => {
+        // catch error
+      })
+}
+
 //a>>theComponentOnTheRight
 
 //aListOfComponentLoops
@@ -556,7 +574,7 @@ function initDemoMap() {
     //   center: [39.90403, 116.407526],
     attributionControl: false,//版权控件添加到地图中
     zoomControl: false, //缩放控件添加到地图中
-    layers: [BlackLayer],
+    layers: [TianDiTu],
     zoom: 10,
   }).setView(data.latLon_Info.uInfo.center, 4)//4:亚洲范围 数字越大，地图放大越大，看到范围越小
 
@@ -579,8 +597,8 @@ const heatData = RHTestData.data
 const heatData2 = RHTestData2.data
 const MYheatData = HeatJson
 const testData = {
-  // max: Math.max(...heatData.map(i => i.count)),
-  max: 200,
+  max: Math.max(...heatData.map(i => i.count)),
+  // max:0,
   data: heatData
 };
 // const cfg = {
@@ -948,7 +966,7 @@ const data222 = [
 //     svg.selectAll('.tick')
 //         .attr('font-weight', d => d > selectedTime.value ? 'bold' : 'normal');
 //   }
-
+const isPhone = ref('')
 onMounted(() => {
   //a>>init && load map
   const mapStuff = initDemoMap();
@@ -975,11 +993,7 @@ onMounted(() => {
   });
 
   //a>>风场动画图层
-  fetch("assets/testData/202307211200.json")
-  // fetch("assets/testData/chushi.json")
-  // fetch("assets/testData/wind_uv.json")
-  // fetch("assets/testData/Z_NAFP_C_CUIT_20230501233200_P_RAMS_100M_CD_UV_500m_202305020159.json")
-  // fetch("assets/rams/00-03/UV/202305020000/Z_NAFP_C_CUIT_20230501233200_P_RAMS_100M_CD_UV_0m_202305020000.json")
+  fetch("./assets/testData/windData/Z_NAFP_C_CUIT_20230501233200_P_RAMS_100M_CD_UV_0m_202305020000.json")
       .then(response => response.json())
       .then(data => {
         windData = data
@@ -994,7 +1008,7 @@ onMounted(() => {
           data: data,
           maxVelocity: 25,
           velocityScale: 0.01,//长度
-          particleMultiplier: 0.01,//数量
+          particleMultiplier: 0.0001,//数量
           opacity: 0.9,
           colorScale: ["rgb(255,255,255)"],
           particleAge: 90,
@@ -1080,7 +1094,7 @@ onMounted(() => {
 
         layerControl.addOverlay(velocityLayer, "风 - 全球");
 
-        // velocityLayer.addTo(map);
+        velocityLayer.addTo(map);
 
 
         // map.setView(center, 8)
@@ -1120,39 +1134,59 @@ onMounted(() => {
   let popup_u_l_corner = L.popup()
       .setLatLng({lat: la1, lon: lo1})
       .setContent(html_u_l_corner)
-      .addTo(map)
+  // .addTo(map)
   // 范围标签--右下角
   let html_b_r_corner = (`右下角：${lo2},${la2}`);
   let popup_b_r_corner = L.popup()
       .setLatLng({lat: la2, lon: lo2})
       .setContent(html_b_r_corner)
-      .addTo(map)
+  // .addTo(map)
 
+
+  // const cfg = {
+  //   // radius should be small ONLY if scaleRadius is true (or small radius is intended)
+  //   // if scaleRadius is false it will be the constant radius used in pixels
+  //   "radius": 5,
+  //   "maxOpacity": 0.8,
+  //   // scales the radius based on map zoom
+  //   "scaleRadius": false,
+  //   // if set to false the heatmap uses the global maximum for colorization
+  //   // if activated: uses the data maximum within the current map boundaries
+  //   //   (there will always be a red spot with useLocalExtremas true)
+  //   "useLocalExtrema": false,
+  //   // which field name in your data represents the latitude - default "lat"
+  //   latField: 'lat',
+  //   // which field name in your data represents the longitude - default "lng"
+  //   lngField: 'lon',
+  //   // which field name in your data represents the data value - default "value"
+  //   valueField: 'count'
+  // };
 
   const cfg = {
     // radius should be small ONLY if scaleRadius is true (or small radius is intended)
     // if scaleRadius is false it will be the constant radius used in pixels
-    "radius": 15,
-    "maxOpacity": .8,
+    radius: 0.02,
+    maxOpacity: 0.68,
     // scales the radius based on map zoom
-    "scaleRadius": false,
+    scaleRadius: true,
     // if set to false the heatmap uses the global maximum for colorization
     // if activated: uses the data maximum within the current map boundaries
     //   (there will always be a red spot with useLocalExtremas true)
-    "useLocalExtrema": false,
+    useLocalExtrema: false,
+    // defaultGradient: { 0.05: "#CC00FF", 0.25: "#6699FF", 0.45: "#99FF33", 0.65: "#FFFF33", 0.85: "#FF9933", 1.0: "#FF0000" },
     // which field name in your data represents the latitude - default "lat"
     latField: 'lat',
     // which field name in your data represents the longitude - default "lng"
     lngField: 'lon',
     // which field name in your data represents the data value - default "value"
-    valueField: 'count'
+    valueField: 'count',
   };
 
   heatmapLayer = new window.HeatmapOverlay(cfg)
   heatmapLayer.addTo(map)
   heatmapLayer.setData(testData);
   windData = RHTestData
-  fitBounds(map,RHTestData)
+  fitBounds(map, RHTestData)
 
   //a>>底部
   createSVGChart()
@@ -1161,9 +1195,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="heatmapWrapper">
-    <canvas id="heatmap"></canvas>
-  </div>
+<!--  <div class="heatmapWrapper">-->
+<!--    <canvas id="heatmap"></canvas>-->
+<!--  </div>-->
   <div id="map"></div>
 
   <div class="left-wrapper">
@@ -1200,6 +1234,80 @@ onMounted(() => {
       </div>
     </div>
   </div>
+<!--  抽屉-->
+  <el-drawer size="60%" style="pointer-events: auto;" v-model="drawer2" :direction="direction">
+    <template #default>
+      <div class="left-wrapper-drawers">
+        <div class="item" :class="{ active: item.id ===selectedID  }" @click="selected(item.id);item.fn();drawer2=false;"
+             v-for="item in optionsList"
+             :key="item.id">
+          <div class="item_layout">
+            <div class="icon-info">
+              <img class="img" :style="{'width':item.iconW,'height':item.iconH}"
+                   :src="item.id ===selectedID?item.icon1:item.icon0" alt="">
+            </div>
+            <div class="bgColor">
+              <span>{{ item.name }}</span>
+            </div>
+          </div>
+          <div class="selectOptions" v-show="false">
+            <div class="typeName"><span>{{ item.typeName }}</span></div>
+            <el-select class="autoWidth-select" v-model="item.value"
+                       :placeholder="item.childrenOptionsList&&item.childrenOptionsList[0].value"
+                       :suffix-icon="IconDropDown"
+            >
+              <template slot="prefix">
+                {{ (item.childrenOptionsList && item.childrenOptionsList.find(s => s.value === value) || {}).label }}
+              </template>
+              <el-option
+                  v-for="i in item.childrenOptionsList"
+                  :key="i.value"
+                  :label="i.label"
+                  :value="i.value"
+                  @click="childOptionClick(i)"
+              >
+              </el-option>
+            </el-select>
+          </div>
+        </div>
+      </div>
+    </template>
+  </el-drawer>
+  <div class="left-wrapper-mobile">
+    <div class="item" v-show="item.id ===selectedID" :class="{ active: item.id ===selectedID,hidden: item.id !== selectedID  }" @click="selected(item.id);item.fn();drawer2 = true"
+         v-for="item in optionsList"
+         :key="item.id">
+      <div class="item_layout">
+        <div class="icon-info">
+          <img class="img" :style="{'width':item.iconW,'height':item.iconH}"
+               :src="item.id ===selectedID?item.icon1:item.icon0" alt="">
+        </div>
+        <div class="bgColor">
+          <span>{{ item.name }}</span>
+        </div>
+      </div>
+      <div class="selectOptions" v-show="item.id ===selectedID&&item.childrenOptionsList">
+        <div class="typeName"><span>{{ item.typeName }}</span></div>
+        <el-select class="autoWidth-select" v-model="item.value"
+                   :placeholder="item.childrenOptionsList&&item.childrenOptionsList[0].value"
+                   :suffix-icon="IconDropDown"
+        >
+          <template slot="prefix">
+            {{ (item.childrenOptionsList && item.childrenOptionsList.find(s => s.value === value) || {}).label }}
+          </template>
+          <el-option
+              v-for="i in item.childrenOptionsList"
+              :key="i.value"
+              :label="i.label"
+              :value="i.value"
+              @click="childOptionClick(i)"
+          >
+          </el-option>
+        </el-select>
+      </div>
+    </div>
+  </div>
+
 
   <div class="right-wrapper">
     <div v-for="item in controlList" :key="item.id">
@@ -1247,13 +1355,13 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-.heatmapWrapper {
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  z-index: 999;
-  opacity: 0.3;
-}
+//.heatmapWrapper {
+//  width: 100vw;
+//  height: 100vh;
+//  position: absolute;
+//  z-index: 999;
+//  opacity: 0.3;
+//}
 
 #map {
   pointer-events: all;
@@ -1271,6 +1379,234 @@ onMounted(() => {
   top: 50vh;
   transform: translateY(-50%);
   left: vw(40);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 100%;
+
+  .item {
+    pointer-events: all;
+
+    .item_layout {
+      position: relative;
+
+      .icon-info {
+        position: absolute;
+        width: vw(30);
+        height: vh(30);
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.5);
+        //background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        //position: relative;
+        //z-index: 2;
+        box-shadow: vh(3) 0 vh(5) vw(-3) rgba(0, 0, 0, .25);
+      }
+
+      .bgColor {
+        //position: relative;
+        //z-index: 1;
+        //width: vw(105);
+        //height: vh(30);
+        box-shadow: 0 vw(1.5) vh(3) rgba(0, 0, 0, .25);
+        text-shadow: vh(1) vw(1) vh(3) rgba(0, 0, 0, .4);
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: vh(15);
+        font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+        font-weight: 400;
+        color: #FFFFFF;
+        line-height: vh(14);
+        letter-spacing: vw(1);
+        //display: flex;
+        //justify-content: center;
+        //align-items: center;
+        display: inline-block;
+        padding: vh(8) vw(20) vh(8) vw(50);
+
+        span {
+          white-space: nowrap;
+        }
+      }
+
+    }
+
+    .selectOptions {
+      width: vw(224);
+      //display: inline-block;
+      height: vh(32);
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: rem(16);
+      margin-top: vh(10);
+      display: flex;
+      font-size: rem(12);
+      font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+      font-weight: 400;
+      color: #FFFFFF;
+      letter-spacing: vw(2);
+      padding-left: vw(10);
+
+      .typeName {
+        //margin-right: vw(8);
+        //margin-left: vw(10);
+        font-size: rem(14);
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+
+        span {
+          line-height: vh(14);
+        }
+
+      }
+
+      ::v-deep(.el-input__wrapper) {
+        background: #0000;
+        //width: 140px;
+        box-shadow: none;
+      }
+
+    }
+
+    .bgColor:hover, .selectOptions:hover {
+      background: rgba(0, 0, 0, 0.75);
+    }
+  }
+
+  .item.active .icon-info {
+    background: #1373eb;
+  }
+
+  .item.active .bgColor {
+    background: rgba(19, 115, 235, 0.6);
+  }
+}
+.left-wrapper-mobile {
+  cursor: pointer;
+  z-index: 999;
+  //height: vh(500);
+  position: absolute;
+  //top: vh(285);
+  bottom: 22.26vh;
+  transform: translateY(-50%);
+  left: 3.39vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 100%;
+
+  .item {
+    pointer-events: all;
+
+    .item_layout {
+      position: relative;
+
+      .icon-info {
+        position: absolute;
+        width: vw(30);
+        height: vh(30);
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.5);
+        //background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        //position: relative;
+        //z-index: 2;
+        box-shadow: vh(3) 0 vh(5) vw(-3) rgba(0, 0, 0, .25);
+      }
+
+      .bgColor {
+        //position: relative;
+        //z-index: 1;
+        //width: vw(105);
+        //height: vh(30);
+        box-shadow: 0 vw(1.5) vh(3) rgba(0, 0, 0, .25);
+        text-shadow: vh(1) vw(1) vh(3) rgba(0, 0, 0, .4);
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: vh(15);
+        font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+        font-weight: 400;
+        color: #FFFFFF;
+        line-height: vh(14);
+        letter-spacing: vw(1);
+        //display: flex;
+        //justify-content: center;
+        //align-items: center;
+        display: inline-block;
+        padding: vh(8) vw(20) vh(8) vw(50);
+
+        span {
+          white-space: nowrap;
+        }
+      }
+
+    }
+
+    .selectOptions {
+      width: vw(224);
+      //display: inline-block;
+      height: vh(32);
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: rem(16);
+      margin-top: vh(10);
+      display: flex;
+      font-size: rem(12);
+      font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+      font-weight: 400;
+      color: #FFFFFF;
+      letter-spacing: vw(2);
+      padding-left: vw(10);
+
+      .typeName {
+        //margin-right: vw(8);
+        //margin-left: vw(10);
+        font-size: rem(14);
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+
+        span {
+          line-height: vh(14);
+        }
+
+      }
+
+      ::v-deep(.el-input__wrapper) {
+        background: #0000;
+        //width: 140px;
+        box-shadow: none;
+      }
+
+    }
+
+    .bgColor:hover, .selectOptions:hover {
+      background: rgba(0, 0, 0, 0.75);
+    }
+  }
+
+  .item.hidden {
+    //display: none;
+  }
+
+  .item.active .icon-info {
+    background: #1373eb;
+  }
+
+  .item.active .bgColor {
+    background: rgba(19, 115, 235, 0.6);
+  }
+}
+.left-wrapper-drawers {
+  cursor: pointer;
+  z-index: 999;
+  height: vh(500);
+  position: absolute;
+  //top: vh(285);
+  top: 50vh;
+  transform: translateY(-50%);
+  left: vw(10);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1545,11 +1881,22 @@ onMounted(() => {
   }
 }
 
+@media screen and (max-width: 960px) {
+  .right-wrapper,.bottom-wrapper,.left-wrapper{
+    display: none;
+  }
+}
+@media screen and (min-width: 960px) {
+  .left-wrapper-mobile{
+    display: none;
+  }
+}
+
 
 </style>
 <style lang="scss">
 
-.left-wrapper {
+.left-wrapper ,.left-wrapper-mobile,.left-wrapper-drawers{
   .el-select {
     --el-select-input-focus-border-color: none;
     display: flex;
