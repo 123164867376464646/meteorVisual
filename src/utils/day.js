@@ -6,11 +6,13 @@ export const getDate = () => {
     const month = date.getMonth() + 1; // 注意月份是从0开始的，所以要加1
     let dayOfMonth = date.getDate().toString()
 
+    const _hours = date.getHours()
+
     if (dayOfMonth < 10) {
         dayOfMonth = '0' + dayOfMonth;
     }
 
-    return {dayOfWeek, month, dayOfMonth, date}
+    return {dayOfWeek, month, dayOfMonth, date, _hours}
 }
 
 export const initDays = (arr, string) => {
@@ -62,7 +64,61 @@ export const initDays = (arr, string) => {
     console.log("🚀 ~ name:string ", string)
 }
 
-//根据选择的时间将其居中到轴中心，并添加高亮颜色
-// export const moveTheTimeline = (timeLine_X,time) => {
-//     timeLine_X.style.transform = `translateX(${translateX_days.value}px)`
-// }
+export const initHours = (arr) => {
+    const {hours} = getDate()
+
+// 添加空数据
+    for (let i = 0; i < 3; i++) {
+        arr.push({hours: ''});
+    }
+// 3：第一天时刻：8、11、14~23（共计12个刻度）
+    const item1_hourArr = [
+        {hours: '08:00'},
+        {hours: '11:00'},
+        {hours: '14:00'},
+        {hours: '15:00'},
+        {hours: '16:00'},
+        {hours: '17:00'},
+        {hours: '18:00'},
+        {hours: '19:00'},
+        {hours: '20:00'},
+        {hours: '21:00'},
+        {hours: '22:00'},
+        {hours: '23:00', hasBorder: true},
+    ]
+    arr.push(...item1_hourArr)
+
+// 4~9：第二到第七天时刻：0~23（共计24个刻度）
+    for (let i = 1; i < 7; i++) {
+        for (let j = 0; j < 24; j++) {
+            if (j < 10) j = '0' + j
+            if(j===23){
+                arr.push({hours: j + ':00',hasBorder: true})
+            }else {
+                arr.push({hours: j + ':00'})
+            }
+        }
+    }
+
+// 10~19
+    let _hour = [2, 5, 8, 11, 14, 17, 20, 23];
+
+    for (let i = 1; i < 11; i++) {
+        for (let j = 0; j < _hour.length; j++) {
+            let hourStr = _hour[j] < 10 ? '0' + _hour[j] : _hour[j];
+            arr.push({hours: `${hourStr}:00`});
+        }
+    }
+
+// 20
+    arr.push(...[{hours: '02:00'}, {hours: '05:00'}, {hours: '08:00'}])
+
+// 21~23
+    // 添加空数据
+    for (let i = 0; i < 3; i++) {
+        arr.push({hours: ''});
+    }
+    console.log("🚀 ~ name:arr    ", arr)
+}
+
+

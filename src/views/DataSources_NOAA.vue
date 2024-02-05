@@ -32,7 +32,7 @@ import {contourHeatmapLayer, createHeatmap, HeatmapLayer, output_windData, VH, V
 import * as dat from 'dat.gui';
 import {fitBounds, result} from "@/utils/mapHelper.js";
 import {ElMessageBox} from "element-plus";
-import {getDate, initDays} from "@/utils/day.js";
+import {getDate, initDays, initHours} from "@/utils/day.js";
 
 let map = ref(null)
 let windData = null
@@ -980,7 +980,6 @@ const currentDom = ref('')
 const handleTouchStart = (e) => {
   startX_days.value = e.touches[0].clientX
 }
-
 const handleTouchMove = (e) => {
   translateX_days.value = e.touches[0].clientX - startX_days.value + lastTimeTranslateX.value;
   const boundary_max = (0 - parseFloat(getComputedStyle(dayPicker.value).width)) * (1 - 7 / 24)
@@ -992,10 +991,6 @@ const handleTouchMove = (e) => {
 const handleTouchEnd = (e) => {
   lastTimeTranslateX.value = translateX_days.value
 }
-
-// const moveTheTimeline = (dayPicker.value,time) => {
-//   dayPicker.value.style.transform = `translateX(${translateX_days.value}px)`
-// }
 
 const {dayOfMonth} = getDate()
 const ct_transX = (index) => {
@@ -1015,10 +1010,57 @@ const c_h_Dom = (_day) => {
   const curDateIndex = days.value.findIndex(day => day.dayOfMonth === _day)
   const translateX = 0 - ct_transX(curDateIndex)
   lastTimeTranslateX.value = translateX
-  const boundary_max = (0 - parseFloat(getComputedStyle(dayPicker.value).width)) * (1 - 7 / 24)
+  const boundary_max = (0 - parseFloat(getComputedStyle(dayPicker.value).width)) * (1 - 6 / 24)
   if (dayPicker.value) {
     if (translateX > 0 || translateX < boundary_max) return
     dayPicker.value.style.transform = `translateX(${translateX}px)`
+  }
+}
+
+//刻度轴
+const hours = ref([])
+const hourPicker = ref(null)
+const startX_hours = ref(0)
+const translateX_hours = ref(0)
+const lastTimeTranslateX_hours = ref(0)
+const currentDom_hour = ref('')
+
+const handleTouchStart_h = (e) => {
+  startX_hours.value = e.touches[0].clientX
+}
+const handleTouchMove_h = (e) => {
+  translateX_hours.value = e.touches[0].clientX - startX_hours.value + lastTimeTranslateX_hours.value;
+  const boundary_max = (0 - parseFloat(getComputedStyle(hourPicker.value).width)) * (1 - 7 / 245)
+  if (hourPicker.value) {
+    if (translateX_hours.value > 0 || translateX_hours.value < boundary_max) return
+    hourPicker.value.style.transform = `translateX(${translateX_hours.value}px)`
+  }
+}
+const handleTouchEnd_h = (e) => {
+  lastTimeTranslateX_hours.value = translateX_hours.value
+}
+const {_hours} = getDate()
+const ct_transX_hour = (index) => {
+  if (hourPicker.value) {
+    const elWidth = parseFloat(getComputedStyle(hourPicker.value).width) * (1 / 245)
+    let translateX = 0
+    if (index < 4 || index > 241) {
+      translateX = 0
+    } else {
+      translateX = (index - 3) * elWidth
+    }
+    return translateX
+  }
+}
+const c_h_Dom_hour = (_hour) => {
+  currentDom_hour.value = _hour
+  const curDateIndex = hours.value.findIndex(hour => hour.hours === _hour)
+  const translateX = 0 - ct_transX_hour(curDateIndex)
+  lastTimeTranslateX.value = translateX
+  const boundary_max = (0 - parseFloat(getComputedStyle(hourPicker.value).width)) * (1 - 6 / 245)
+  if (hourPicker.value) {
+    if (translateX > 0 || translateX < boundary_max) return
+    hourPicker.value.style.transform = `translateX(${translateX}px)`
   }
 }
 
@@ -1281,6 +1323,11 @@ onMounted(() => {
   initDays(days.value, isActive_cur_day.value)
   //居中并高亮元素
   c_h_Dom(dayOfMonth)
+
+
+  initHours(hours.value)
+  c_h_Dom_hour(dayOfMonth)
+
 })
 
 </script>
@@ -1455,7 +1502,7 @@ onMounted(() => {
       >
         <div v-for="day in days" :data-info="day.dayOfMonth" :key="day" class="day sizeItem"
              :class="currentDom=== day.dayOfMonth? 'currentDay_highlight' : ''"
-             @click="c_h_Dom(day.dayOfMonth)"
+             @click="day.dayOfMonth!==''&&c_h_Dom(day.dayOfMonth)"
         >
           <div class="dayOfWeek">{{ day.dayOfWeek }}</div>
           <div :class="isActive_cur_day.currentDay=== day.dayOfMonth? 'isCurDay_top_border' : ''"
@@ -1464,11 +1511,25 @@ onMounted(() => {
           </div>
         </div>
       </div>
-            <div class="hour-picker">
-<!--              <div v-for="hour in hours" :key="hour" class="hour sizeItem" @click="selectHour(hour)"-->
-<!--                   :class="{ 'selected': selectedHour === hour }">{{ hour }}-->
-<!--              </div>-->
-            </div>
+      <div ref="hourPicker" class="hour-picker"
+           @touchstart="handleTouchStart_h"
+           @touchmove="handleTouchMove_h"
+           @touchend="handleTouchEnd_h"
+      >
+        <!--        <div v-for="hour in hours" :data-info="hour.hours" :key="hour" class="hour sizeItem" @click="selectHour(hour)"-->
+        <!--             :class="{ 'selected': selectedHour === hour }">{{ hour }}-->
+        <!--        </div>-->
+        <div v-for="hour in hours" :data-info="hour.hours" :key="hour"
+             class="hour sizeItem"
+             :class="[
+                 hour.hasBorder?'outLineRight':'',
+                 currentDom_hour=== hour.hours? 'currentDay_highlight' : ''
+                 ]"
+             @click="hour.hours!==''&&c_h_Dom_hour(hour.hours)"
+        >
+          <div>{{ hour.hours }}</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -2064,15 +2125,21 @@ onMounted(() => {
   }
 
   .hour-picker {
+    transition: transform 0.1s;
     display: flex;
-    width: calc(100% * 3);
+    width: calc(100% * 245 / 7);
     justify-content: space-between;
     outline: 1px solid #000;
   }
 
   .hour {
-    flex-basis: calc(100% / 6);
-    max-width: calc(100% / 6);
+    transition: transform 0.1s;
+    display: flex;
+
+  }
+
+  .hour.outLineRight {
+    border-right: 1px solid white;
   }
 
   .selected {
