@@ -32,7 +32,7 @@ import {contourHeatmapLayer, createHeatmap, HeatmapLayer, output_windData, VH, V
 import * as dat from 'dat.gui';
 import {fitBounds, result} from "@/utils/mapHelper.js";
 import {ElMessageBox} from "element-plus";
-import {initDays} from "@/utils/day.js";
+import {getDate, initDays} from "@/utils/day.js";
 
 let map = ref(null)
 let windData = null
@@ -968,7 +968,59 @@ const data222 = [
 // }
 
 const days = ref([]);
-const isActive_cur_day = ref('')
+const isActive_cur_day = ref({currentDay: ''})
+
+//第一排移动组件：日期时间轴元素
+const dayPicker = ref(null)
+const startX_days = ref(0)
+const translateX_days = ref(0)
+const lastTimeTranslateX = ref(0)
+const currentDom = ref('')
+
+const handleTouchStart = (e) => {
+  startX_days.value = e.touches[0].clientX
+}
+
+const handleTouchMove = (e) => {
+  translateX_days.value = e.touches[0].clientX - startX_days.value + lastTimeTranslateX.value;
+  const boundary_max = (0 - parseFloat(getComputedStyle(dayPicker.value).width)) * (1 - 7 / 24)
+  if (dayPicker.value) {
+    if (translateX_days.value > 0 || translateX_days.value < boundary_max) return
+    dayPicker.value.style.transform = `translateX(${translateX_days.value}px)`
+  }
+}
+const handleTouchEnd = (e) => {
+  lastTimeTranslateX.value = translateX_days.value
+}
+
+// const moveTheTimeline = (dayPicker.value,time) => {
+//   dayPicker.value.style.transform = `translateX(${translateX_days.value}px)`
+// }
+
+const {dayOfMonth} = getDate()
+const ct_transX = (index) => {
+  if (dayPicker.value) {
+    const elWidth = parseFloat(getComputedStyle(dayPicker.value).width) * (1 / 24)
+    let translateX = 0
+    if (index < 4 || index > 20) {
+      translateX = 0
+    } else {
+      translateX = (index - 3) * elWidth
+    }
+    return translateX
+  }
+}
+const c_h_Dom = (_day) => {
+  currentDom.value = _day
+  const curDateIndex = days.value.findIndex(day => day.dayOfMonth === _day)
+  const translateX = 0 - ct_transX(curDateIndex)
+  lastTimeTranslateX.value = translateX
+  const boundary_max = (0 - parseFloat(getComputedStyle(dayPicker.value).width)) * (1 - 7 / 24)
+  if (dayPicker.value) {
+    if (translateX > 0 || translateX < boundary_max) return
+    dayPicker.value.style.transform = `translateX(${translateX}px)`
+  }
+}
 
 
 // 点击回调函数
@@ -1001,6 +1053,8 @@ const isActive_cur_day = ref('')
 //         .attr('font-weight', d => d > selectedTime.value ? 'bold' : 'normal');
 //   }
 onMounted(() => {
+
+
   //a>>init && load map
   const mapStuff = initDemoMap();
   const map = mapStuff.map;
@@ -1224,7 +1278,9 @@ onMounted(() => {
   //a>>底部
   createSVGChart()
   //移动端初始化时间
-  initDays(days.value,isActive_cur_day.value)
+  initDays(days.value, isActive_cur_day.value)
+  //居中并高亮元素
+  c_h_Dom(dayOfMonth)
 })
 
 </script>
@@ -1392,17 +1448,27 @@ onMounted(() => {
   </div>
   <div class="bottom-wrapper-mobile">
     <div class="time-picker">
-      <div class="day-picker">
-        <div v-for="day in days" :key="day" class="day sizeItem">
+      <div ref="dayPicker" class="day-picker"
+           @touchstart="handleTouchStart"
+           @touchmove="handleTouchMove"
+           @touchend="handleTouchEnd"
+      >
+        <div v-for="day in days" :data-info="day.dayOfMonth" :key="day" class="day sizeItem"
+             :class="currentDom=== day.dayOfMonth? 'currentDay_highlight' : ''"
+             @click="c_h_Dom(day.dayOfMonth)"
+        >
           <div class="dayOfWeek">{{ day.dayOfWeek }}</div>
-          <div :class="isActive_cur_day=== day.dayOfMonth? 'isCurDay_top_border' : ''" class="month-dayOfMonth">{{ day.month }}{{ day.dayOfMonth }}</div>
+          <div :class="isActive_cur_day.currentDay=== day.dayOfMonth? 'isCurDay_top_border' : ''"
+               class="month-dayOfMonth">
+            {{ day.month }}{{ day.dayOfMonth }}
+          </div>
         </div>
       </div>
-      <!--      <div class="hour-picker">-->
-      <!--        <div v-for="hour in hours" :key="hour" class="hour sizeItem" @click="selectHour(hour)"-->
-      <!--             :class="{ 'selected': selectedHour === hour }">{{ hour }}-->
-      <!--        </div>-->
-      <!--      </div>-->
+            <div class="hour-picker">
+<!--              <div v-for="hour in hours" :key="hour" class="hour sizeItem" @click="selectHour(hour)"-->
+<!--                   :class="{ 'selected': selectedHour === hour }">{{ hour }}-->
+<!--              </div>-->
+            </div>
     </div>
   </div>
 </template>
@@ -1956,7 +2022,7 @@ onMounted(() => {
     color: white;
     font-size: 16px;
     cursor: pointer;
-    text-shadow: 1px 1px 3px rgba(0,0,0,.4);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, .4);
   }
 
   .time-picker {
@@ -1969,6 +2035,7 @@ onMounted(() => {
   }
 
   .day-picker {
+    transition: transform 0.1s;
     display: flex;
     width: calc(100% * 24 / 7);
     justify-content: space-between;
@@ -1985,9 +2052,15 @@ onMounted(() => {
     .month-dayOfMonth {
       font-size: 90%;
     }
-    .isCurDay_top_border{
-      border:1px solid red;
+
+    .isCurDay_top_border {
+      text-decoration: overline;
     }
+
+  }
+
+  .currentDay_highlight {
+    background: #2F80ED;
   }
 
   .hour-picker {
