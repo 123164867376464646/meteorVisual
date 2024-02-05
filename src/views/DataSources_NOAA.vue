@@ -515,6 +515,25 @@ const exitFullscreenOrFullscreen = () => {
   }
 }
 
+//b>>颜色图例
+const colorList = ref([
+  {id: 0, color: '#FFFFFFFF', text: '°C'},
+  {id: 1, color: '#93174EFF', text: '50'},
+  {id: 2, color: '#B23766FF', text: '40'},
+  {id: 3, color: '#D2605FFF', text: '30'},
+  {id: 4, color: '#D9794DFF', text: '25'},
+  {id: 5, color: '#D89B42FF', text: '20'},
+  {id: 6, color: '#DCB640FF', text: '15'},
+  {id: 7, color: '#CDDA3EFF', text: '10'},
+  {id: 8, color: '#90CD4BFF', text: '5'},
+  {id: 9, color: '#53B864FF', text: '0'},
+  {id: 10, color: '#499CAEFF', text: '-5'},
+  {id: 11, color: '#5572B6FF', text: '-10'},
+  {id: 12, color: '#7470A2FF', text: '-15'},
+  {id: 13, color: '#6F6B86FF', text: '-20'},
+  {id: 14, color: '#8F8F8FFF', text: '-30'},
+])
+
 //a>>MAP
 
 //init map
@@ -1458,6 +1477,12 @@ onMounted(() => {
     </div>
   </div>
 
+  <div class="colorLegend">
+    <div class="item" v-for="item in colorList" :key="item.id">
+      <div :style="{background:item.color}">{{ item.text }}</div>
+    </div>
+  </div>
+
   <div class="bottom-wrapper">
     <div class="playButton">
       <img class="img" src="@/assets/png/whiteIcon/Vector@2x(7).png" alt="">
@@ -1924,6 +1949,21 @@ onMounted(() => {
   }
 }
 
+.colorLegend {
+  z-index: 999;
+  position: absolute;
+  bottom: vh(90);
+  right: vw(40);
+
+  .item {
+    width: vw(50);
+    height: vh(25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
 .bottom-wrapper {
   //width: vw(1840);
   width: 95.8333333333vw;
@@ -2152,7 +2192,7 @@ onMounted(() => {
   .left-wrapper {
     animation: zoomOut 0.5s;
   }
-  .right-wrapper, .bottom-wrapper, .left-wrapper {
+  .right-wrapper, .bottom-wrapper, .left-wrapper, .colorLegend {
     display: none;
   }
 }
