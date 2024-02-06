@@ -33,6 +33,7 @@ import * as dat from 'dat.gui';
 import {fitBounds, result} from "@/utils/mapHelper.js";
 import {ElMessageBox} from "element-plus";
 import {getDate, initDays, initHours} from "@/utils/day.js";
+import {FuncTemperature} from "@/js/func.temperature.js";
 
 let map = ref(null)
 let windData = null
@@ -1310,31 +1311,36 @@ onMounted(() => {
   //   valueField: 'count'
   // };
 
-  const cfg = {
-    // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-    // if scaleRadius is false it will be the constant radius used in pixels
-    radius: 0.02,
-    maxOpacity: 0.68,
-    // scales the radius based on map zoom
-    scaleRadius: true,
-    // if set to false the heatmap uses the global maximum for colorization
-    // if activated: uses the data maximum within the current map boundaries
-    //   (there will always be a red spot with useLocalExtremas true)
-    useLocalExtrema: false,
-    // defaultGradient: { 0.05: "#CC00FF", 0.25: "#6699FF", 0.45: "#99FF33", 0.65: "#FFFF33", 0.85: "#FF9933", 1.0: "#FF0000" },
-    // which field name in your data represents the latitude - default "lat"
-    latField: 'lat',
-    // which field name in your data represents the longitude - default "lng"
-    lngField: 'lon',
-    // which field name in your data represents the data value - default "value"
-    valueField: 'count',
-  };
+  // const cfg = {
+  //   // radius should be small ONLY if scaleRadius is true (or small radius is intended)
+  //   // if scaleRadius is false it will be the constant radius used in pixels
+  //   radius: 0.02,
+  //   maxOpacity: 0.68,
+  //   // scales the radius based on map zoom
+  //   scaleRadius: true,
+  //   // if set to false the heatmap uses the global maximum for colorization
+  //   // if activated: uses the data maximum within the current map boundaries
+  //   //   (there will always be a red spot with useLocalExtremas true)
+  //   useLocalExtrema: false,
+  //   // defaultGradient: { 0.05: "#CC00FF", 0.25: "#6699FF", 0.45: "#99FF33", 0.65: "#FFFF33", 0.85: "#FF9933", 1.0: "#FF0000" },
+  //   // which field name in your data represents the latitude - default "lat"
+  //   latField: 'lat',
+  //   // which field name in your data represents the longitude - default "lng"
+  //   lngField: 'lon',
+  //   // which field name in your data represents the data value - default "value"
+  //   valueField: 'count',
+  // };
+  //
+  // heatmapLayer = new window.HeatmapOverlay(cfg)
+  // heatmapLayer.addTo(map)
+  // heatmapLayer.setData(testData);
+  // windData = RHTestData
+  // fitBounds(map, RHTestData)
 
-  heatmapLayer = new window.HeatmapOverlay(cfg)
-  heatmapLayer.addTo(map)
-  heatmapLayer.setData(testData);
-  windData = RHTestData
-  fitBounds(map, RHTestData)
+
+  heatmapLayer = new FuncTemperature(map)
+  heatmapLayer.start()
+  console.log("🚀 ~ name:heatmapLayer",heatmapLayer)
 
   //a>>底部
   createSVGChart()
@@ -1478,8 +1484,8 @@ onMounted(() => {
   </div>
 
   <div class="colorLegend">
-    <div class="item" v-for="item in colorList" :key="item.id">
-      <div :style="{background:item.color}">{{ item.text }}</div>
+    <div class="item" v-for="item in colorList" :style="{background:item.color}" :key="item.id">
+      <div>{{ item.text }}</div>
     </div>
   </div>
 
@@ -2128,11 +2134,9 @@ onMounted(() => {
 
   .time-picker {
     width: 100%;
-    height: 11.521vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
   }
 
   .day-picker {
