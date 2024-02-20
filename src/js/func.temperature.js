@@ -16,20 +16,20 @@ export class FuncTemperature {
     let row,
       temp = [];
     const url = './assets/testData/otherData/temperature.csv';
-    ParseData(url, function (results, parser) {
-      console.log("🚀 ~ name:results",results)
-      // row = results.data[0];
-      // if (row.length === 1) {
-      //   if (temp.length) this.contourData.push(temp);
-      //   temp = [];
-      // } else if (row.length === 3) {
-      //   if (typeof row[0] !== 'string') {
-      //     temp.push(row);
-      //     this.heatMapData.push(row);
-      //   }
-      // } else if (row.length === 4) {
-      //   if (typeof row[0] !== 'string') this.hlData.push(row);
-      // }
+    new ParseData(url, function (results, parser) {
+      row = results.data;
+
+      if (row.length === 1) {
+        if (temp.length) this.contourData.push(temp);
+        temp = [];
+      } else if (row.length === 3) {
+        if (typeof row[0] !== 'string') {
+          temp.push(row);
+          this.heatMapData.push(row);
+        }
+      } else if (row.length === 4) {
+        if (typeof row[0] !== 'string') this.hlData.push(row);
+      }
     }, function (results) {
       this.getDataCallback();
     }, this);

@@ -34,6 +34,7 @@ import {fitBounds, result} from "@/utils/mapHelper.js";
 import {ElMessageBox} from "element-plus";
 import {getDate, initDays, initHours} from "@/utils/day.js";
 import {FuncTemperature} from "@/js/func.temperature.js";
+import {MyTileLayerCanvas, TileLayerCanvas} from "@/js/TileLayerCanvas.js";
 
 let map = ref(null)
 let windData = null
@@ -1341,6 +1342,11 @@ onMounted(() => {
   heatmapLayer = new FuncTemperature(map)
   heatmapLayer.start()
   console.log("🚀 ~ name:heatmapLayer",heatmapLayer)
+
+
+  // const colorLayer = new MyTileLayerCanvas()
+  // console.log("🚀 ~ name:colorLayer",colorLayer)
+  // colorLayer.addTo(map)
 
   //a>>底部
   createSVGChart()

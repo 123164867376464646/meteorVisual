@@ -60,8 +60,8 @@ export const initDays = (arr, string) => {
     for (let i = 0; i < 3; i++) {
         arr.push({dayOfWeek: '', month: '', dayOfMonth: ''});
     }
-    console.log("🚀 ~ name:arr ", arr)
-    console.log("🚀 ~ name:string ", string)
+    // console.log("🚀 ~ name:arr ", arr)
+    // console.log("🚀 ~ name:string ", string)
 }
 
 export const initHours = (arr) => {
@@ -118,7 +118,7 @@ export const initHours = (arr) => {
     for (let i = 0; i < 3; i++) {
         arr.push({hours: ''});
     }
-    console.log("🚀 ~ name:arr    ", arr)
+    // console.log("🚀 ~ name:arr    ", arr)
 }
 
 
