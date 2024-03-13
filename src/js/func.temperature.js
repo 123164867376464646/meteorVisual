@@ -1,4 +1,4 @@
-import { ParseData } from '../utils/tool.parseData.js'
+import { parseData } from '../utils/tool.parseData.js'
 // import { HeatmapOverlay } from './leafletHeatmap/leaflet-heatmap';
 import { TemperatureLayer } from './ocean.weather.temperature';
 // import ClipLand from './tool.clipLand';
@@ -16,7 +16,7 @@ export class FuncTemperature {
     let row,
       temp = [];
     const url = './assets/testData/otherData/temperature.csv';
-    new ParseData(url, function (results, parser) {
+    parseData(url, function (results, parser) {
       row = results.data;
 
       if (row.length === 1) {
@@ -48,7 +48,7 @@ export class FuncTemperature {
     // this.interpolate(this.heatMapData);
     // contour
     this._layer = new TemperatureLayer({
-      isclip: true,
+      isclip: false,
     }, {
       data: this.contourData,
       hlData: this.hlData,

@@ -20,7 +20,7 @@ export var TemperatureLayer = CanvasLayer.extend({
     fontSize: '12px',
     fontWeight: 600,
     fontFamily: 'Microsoft YaHei',
-    fontColor: '#61A5E8',
+    fontColor: '#ff0000',
     fontStrokeSize: 3,
     fontStrokeColor: '#fff'
   },
@@ -78,17 +78,19 @@ export var TemperatureLayer = CanvasLayer.extend({
       text = data[i][0][this.cfg.value];
       this._drawLine(ctx, points);
       if (this.options.isDrawLeftRight){
-        lpoints = this.getLeft360Points(map, data[i]);
-        rpoints = this.getRight360Points(map, data[i]);
-        this._drawLine(ctx, lpoints);
-        this._drawLine(ctx, rpoints);
+        //a>>注释文字标注
+        // lpoints = this.getLeft360Points(map, data[i]);
+        // rpoints = this.getRight360Points(map, data[i]);
+        // this._drawLine(ctx, lpoints);
+        // this._drawLine(ctx, rpoints);
       }
       if (zoom >= this.options.showLevel) { // zoom >= 3 && zoom < 5 && text >= 1000 || zoom >= 5
-        this._drawText(ctx, points[Math.floor(points.length / 2)] ,text);
-        if (this.options.isDrawLeftRight){
-          this._drawText(ctx, lpoints[Math.floor(points.length / 2)] ,text);
-          this._drawText(ctx, rpoints[Math.floor(points.length / 2)] ,text);
-        }
+        //a>>注释文字标注
+        // this._drawText(ctx, points[Math.floor(points.length / 2)] ,text);
+        // if (this.options.isDrawLeftRight){
+        //   this._drawText(ctx, lpoints[Math.floor(points.length / 2)] ,text);
+        //   this._drawText(ctx, rpoints[Math.floor(points.length / 2)] ,text);
+        // }
       }
     }
   },
@@ -218,15 +220,16 @@ export var TemperatureLayer = CanvasLayer.extend({
 		}
 
 		if (options.stroke && options.weight !== 0) {
-			if (ctx.setLineDash) {
-				ctx.setLineDash(this.options && this.options._dashArray || []);
-			}
-			ctx.globalAlpha = options.opacity;
-			ctx.lineWidth = options.weight;
-			ctx.strokeStyle = options.color;
-			ctx.lineCap = options.lineCap;
-			ctx.lineJoin = options.lineJoin;
-			ctx.stroke();
+          //a>>注释轮廓线
+			// if (ctx.setLineDash) {
+			// 	ctx.setLineDash(this.options && this.options._dashArray || []);
+			// }
+			// ctx.globalAlpha = options.opacity;
+			// ctx.lineWidth = options.weight;
+			// ctx.strokeStyle = options.color;
+			// ctx.lineCap = options.lineCap;
+			// ctx.lineJoin = options.lineJoin;
+			// ctx.stroke();
 		}
 	},
 

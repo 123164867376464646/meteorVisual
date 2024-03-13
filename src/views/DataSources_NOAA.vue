@@ -469,6 +469,7 @@ const childOptionClick = (i) => {
 
 //b>>左侧抽屉
 const radio1 = ref('Option 1')
+const drawer1 = ref(false)
 const drawer2 = ref(false)
 const direction = ref('ltr')
 
@@ -616,7 +617,48 @@ function initDemoMap() {
 let velocityLayer = null
 
 //热力图层
+//默认配置
+const cfg1 = {
+  // 只有当 scaleRadius 为 true（或打算使用小半径）时，radius 才应小
+  "radius": 4,
+  "maxOpacity": 0.8,
+  // 根据地图缩放缩放半径
+  // 如果 scaleRadius 为 false，它将是以像素为单位使用的常量半径
+  "scaleRadius": false,
+  // 如果设置为 false，则热图使用全局最大值进行着色
+  // 如果已激活：使用当前地图边界内的数据最大值
+  // （useLocalExtremas true 时总会有一个红点）
+  "useLocalExtrema": false,
+  // 数据中的哪个字段名称表示纬度 - 默认为“纬度”
+  latField: 'lat',
+  // 数据中的哪个字段名称表示经度 - 默认为“LNG”
+  lngField: 'lon',
+  // 数据中的哪个字段名称表示数据值 - 默认为“值”
+  valueField: 'count'
+};
+const cfg2 = {
+  radius: 0.02,
+  maxOpacity: 0.68,
+  scaleRadius: true,
+  useLocalExtrema: false,
+  //颜色配置
+  defaultGradient: {
+    0.05: "#CC00FF",
+    0.25: "#6699FF",
+    0.45: "#99FF33",
+    0.65: "#FFFF33",
+    0.85: "#FF9933",
+    1.0: "#89a41f"
+  },
+  latField: 'lat',
+  lngField: 'lon',
+  valueField: 'count',
+};
+const radio = ref('cfg1')
+const radio2 = ref('data1')
+
 let heatmapLayer = null
+let heatmapLayer2 = null
 const heatData = RHTestData.data
 const heatData2 = RHTestData2.data
 const MYheatData = HeatJson
@@ -625,27 +667,23 @@ const testData = {
   // max:0,
   data: heatData
 };
-// const cfg = {
-//   // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-//   // if scaleRadius is false it will be the constant radius used in pixels
-//   // 整数 *可选* 默认 15
-//   // 定义数据点的半径。重要提示：如果scaleRadius为假，则半径以像素为单位测量。如果scaleRadius为true，则按照地图的比例进行测量。
-//   "radius": 4,
-//   "maxOpacity": 0.2,
-//   // boolean *可选* 默认 false
-//   // 是否应根据缩放级别缩放半径
-//   "scaleRadius": false,
-//   // if set to false the heatmap uses the global maximum for colorization
-//   // if activated: uses the data maximum within the current map boundaries
-//   //   (there will always be a red spot with useLocalExtremas true)
-//   "useLocalExtrema": true,
-//   // which field name in your data represents the latitude - default "lat"
-//   latField: 'lat',
-//   // which field name in your data represents the longitude - default "lng"
-//   lngField: 'lon',
-//   // which field name in your data represents the data value - default "value"
-//   valueField: 'count'
-// };
+
+function setCfg(cfg) {
+  if (cfg === 'cfg1') {
+    heatmapLayer.updateConfig(cfg1)
+  } else {
+    heatmapLayer.updateConfig(cfg2)
+  }
+}
+
+function setHeatData(data) {
+  const testData = {
+    max: Math.max(...data.map(i => i.count)),
+    // max:0,
+    data: data
+  };
+  heatmapLayer.setData(testData);
+}
 
 //d3 等高线热力图层
 let heatmapLayer_d3 = null
@@ -1115,6 +1153,8 @@ const c_h_Dom_hour = (_hour) => {
 //     svg.selectAll('.tick')
 //         .attr('font-weight', d => d > selectedTime.value ? 'bold' : 'normal');
 //   }
+
+
 onMounted(() => {
 
 
@@ -1242,7 +1282,7 @@ onMounted(() => {
         //     .setContent(html_b_r_corner)
         //     .addTo(map)
 
-        layerControl.addOverlay(velocityLayer, "风 - 全球");
+        layerControl.addOverlay(velocityLayer, "风-双流机场 ");
 
         velocityLayer.addTo(map);
 
@@ -1293,55 +1333,16 @@ onMounted(() => {
   // .addTo(map)
 
 
-  // const cfg = {
-  //   // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-  //   // if scaleRadius is false it will be the constant radius used in pixels
-  //   "radius": 5,
-  //   "maxOpacity": 0.8,
-  //   // scales the radius based on map zoom
-  //   "scaleRadius": false,
-  //   // if set to false the heatmap uses the global maximum for colorization
-  //   // if activated: uses the data maximum within the current map boundaries
-  //   //   (there will always be a red spot with useLocalExtremas true)
-  //   "useLocalExtrema": false,
-  //   // which field name in your data represents the latitude - default "lat"
-  //   latField: 'lat',
-  //   // which field name in your data represents the longitude - default "lng"
-  //   lngField: 'lon',
-  //   // which field name in your data represents the data value - default "value"
-  //   valueField: 'count'
-  // };
-
-  // const cfg = {
-  //   // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-  //   // if scaleRadius is false it will be the constant radius used in pixels
-  //   radius: 0.02,
-  //   maxOpacity: 0.68,
-  //   // scales the radius based on map zoom
-  //   scaleRadius: true,
-  //   // if set to false the heatmap uses the global maximum for colorization
-  //   // if activated: uses the data maximum within the current map boundaries
-  //   //   (there will always be a red spot with useLocalExtremas true)
-  //   useLocalExtrema: false,
-  //   // defaultGradient: { 0.05: "#CC00FF", 0.25: "#6699FF", 0.45: "#99FF33", 0.65: "#FFFF33", 0.85: "#FF9933", 1.0: "#FF0000" },
-  //   // which field name in your data represents the latitude - default "lat"
-  //   latField: 'lat',
-  //   // which field name in your data represents the longitude - default "lng"
-  //   lngField: 'lon',
-  //   // which field name in your data represents the data value - default "value"
-  //   valueField: 'count',
-  // };
-  //
-  // heatmapLayer = new window.HeatmapOverlay(cfg)
+  // heatmapLayer = new HeatmapOverlay(cfg1)
+  // layerControl.addOverlay(heatmapLayer, "热力图h337-双流机场-随机值");
   // heatmapLayer.addTo(map)
   // heatmapLayer.setData(testData);
   // windData = RHTestData
   // fitBounds(map, RHTestData)
 
 
-  heatmapLayer = new FuncTemperature(map)
-  heatmapLayer.start()
-  console.log("🚀 ~ name:heatmapLayer",heatmapLayer)
+  heatmapLayer2 = new FuncTemperature(map)
+  heatmapLayer2.start()
 
 
   // const colorLayer = new MyTileLayerCanvas()
@@ -1368,6 +1369,17 @@ onMounted(() => {
   <!--    <canvas id="heatmap"></canvas>-->
   <!--  </div>-->
   <div id="map"></div>
+
+  <div class="settingBtn" @click="()=>{drawer1 = true}"></div>
+  <el-drawer size="20%" style="pointer-events: auto;" v-model="drawer1" :direction="direction">
+    <template #default>
+      <el-radio @click="setCfg('cfg1')" v-model="radio" label="cfg1">配置1</el-radio>
+      <el-radio @click="setCfg('cfg2')" v-model="radio" label="cfg2">配置2</el-radio>
+
+      <el-radio @click="setHeatData(heatData)" v-model="radio2" label="data1">随机数据</el-radio>
+      <el-radio @click="setHeatData(heatData2)" v-model="radio2" label="data2">测试数据</el-radio>
+    </template>
+  </el-drawer>
 
   <div class="left-wrapper">
     <div class="item" :class="{ active: item.id ===selectedID  }" @click="selected(item.id);item.fn()"
@@ -1584,6 +1596,17 @@ onMounted(() => {
   pointer-events: all;
   width: 100vw;
   height: 100vh;
+}
+
+.settingBtn {
+  width: vw(48);
+  height: vh(48);
+  background: url("@/assets/png/settingIcon.png") center/100% 100% no-repeat;
+  cursor: pointer;
+  z-index: 999;
+  position: absolute;
+  top: vh(10);
+  left: vw(10);
 }
 
 

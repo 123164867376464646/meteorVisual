@@ -222,6 +222,10 @@
                 this._heatmap._renderer.setDimensions(this._width, this._height);
             }
             this._draw();
+        },
+        updateConfig:function (newCfg) {
+            this.cfg = newCfg
+            this._draw()
         }
     });
 
@@ -246,3 +250,5 @@
 
     return HeatmapOverlay;
 });
+
+window.HeatmapOverlay = HeatmapOverlay
