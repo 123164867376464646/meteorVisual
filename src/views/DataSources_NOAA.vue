@@ -573,7 +573,7 @@ function initDemoMap() {
 
   const TianDiTu = L.tileLayer.chinaProvider('Geoq.Normal.Gray', {
     maxZoom: 18,
-    minZoom: 5,
+    minZoom: 3,
     subtitle: 'TianDiTu'
   })
 
@@ -1332,6 +1332,7 @@ onMounted(() => {
       .setContent(html_b_r_corner)
   // .addTo(map)
 
+  //TODO 客户数据热力图版本
 
   // heatmapLayer = new HeatmapOverlay(cfg1)
   // layerControl.addOverlay(heatmapLayer, "热力图h337-双流机场-随机值");

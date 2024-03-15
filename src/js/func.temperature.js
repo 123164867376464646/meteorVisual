@@ -47,6 +47,8 @@ export class FuncTemperature {
   getDataCallback() {
     // this.interpolate(this.heatMapData);
     // contour
+
+    //添加温度数据标注
     this._layer = new TemperatureLayer({
       isclip: false,
     }, {
@@ -59,6 +61,7 @@ export class FuncTemperature {
       max: 100,
       data: this.heatMapData,
     };
+    console.log("🚀 ~ name:this.heatMapData",this.heatMapData)
     const cfg = {
       // radius should be small ONLY if scaleRadius is true (or small radius is intended)
       // if scaleRadius is false it will be the constant radius used in pixels
@@ -122,19 +125,27 @@ export class FuncTemperature {
     return turf.featureCollection(features);
   }
 
+  // getColor(value) {
+  //   if (value <= 12) {
+  //     return '#CC00FF';
+  //   } else if (value > 12 && value <= 13) {
+  //     return '#6699FF';
+  //   } else if (value > 13 && value <= 14) {
+  //     return '#99FF33';
+  //   } else if (value > 14 && value <= 15) {
+  //     return '#FFFF33';
+  //   } else if (value > 15 && value <= 16) {
+  //     return '#FF9933';
+  //   }
+  //   return '#FF0000';
+  // }
+
   getColor(value) {
     if (value <= 12) {
-      return '#CC00FF';
-    } else if (value > 12 && value <= 13) {
-      return '#6699FF';
-    } else if (value > 13 && value <= 14) {
-      return '#99FF33';
-    } else if (value > 14 && value <= 15) {
-      return '#FFFF33';
-    } else if (value > 15 && value <= 16) {
-      return '#FF9933';
+      return '#FF0000';
+    }else {
+      return '#FF0000';
     }
-    return '#FF0000';
   }
 
 }
