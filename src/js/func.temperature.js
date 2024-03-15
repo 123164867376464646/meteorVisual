@@ -61,6 +61,11 @@ export class FuncTemperature {
       max: 100,
       data: this.heatMapData,
     };
+    this.heatMapData = this.heatMapData.map(item => {
+      // 取第三项的值，然后除以2
+      item[2] /= 5;
+      return item;
+    });
     console.log("🚀 ~ name:this.heatMapData",this.heatMapData)
     const cfg = {
       // radius should be small ONLY if scaleRadius is true (or small radius is intended)
