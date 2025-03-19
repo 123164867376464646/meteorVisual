@@ -11,7 +11,7 @@ export var TemperatureLayer = CanvasLayer.extend({
     isDrawLeftRight: false,
     showLevel: 4, // 文字的显示级别
     stroke: true,
-    color:  '#605FF0', //'#61A5E8',
+    color:  '#fc0404', //'#61A5E8',
     weight: 0.8,
     opacity: 0.85,
     lineCap: 'round',

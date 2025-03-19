@@ -66,7 +66,6 @@ export class FuncTemperature {
       item[2] /= 5;
       return item;
     });
-    console.log("🚀 ~ name:this.heatMapData",this.heatMapData)
     const cfg = {
       // radius should be small ONLY if scaleRadius is true (or small radius is intended)
       // if scaleRadius is false it will be the constant radius used in pixels
