@@ -599,7 +599,7 @@ function initDemoMap() {
     //   center: [39.90403, 116.407526],
     attributionControl: false,//版权控件添加到地图中
     zoomControl: false, //缩放控件添加到地图中
-    layers: [TianDiTu],
+    layers: [BlackLayer],
     zoom: 10,
   }).setView(data.latLon_Info.uInfo.center, 4)//4:亚洲范围 数字越大，地图放大越大，看到范围越小
 

@@ -13,9 +13,9 @@ export class FuncTemperature {
     this.heatMapData = [];
     this.contourData = [];
     this.hlData = [];
-    let row,
-      temp = [];
-    const url = './assets/testData/otherData/temperature.csv';
+    let row, temp = [];
+
+    let url = new URL(`/assets/testData/otherData/temperature.csv`, import.meta.url).href
     parseData(url, function (results, parser) {
       row = results.data;
 

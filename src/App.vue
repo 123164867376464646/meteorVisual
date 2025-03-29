@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {onMounted} from 'vue'
 import autofit from 'autofit.js'
+import Papa from 'papaparse';
+
 
 const setRem = () => {
   const clientWidth = document.documentElement.clientWidth //获取视口宽度
@@ -37,6 +39,5 @@ window.addEventListener('resize', setRem);
   width: 100vw;
   height: 100vh;
   background: url("@/assets/png/layerBg.png") repeat;
-  //pointer-events: none;
 }
 </style>
