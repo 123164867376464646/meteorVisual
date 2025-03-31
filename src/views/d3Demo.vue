@@ -113,11 +113,30 @@ const VH = (h) => {
   return (h / 1080) * 100 + 'vh'
 }
 
+function captureElement() {
+  // 获取要截图的DOM元素
+  const element = document.getElementById('app');
+  // 使用html2canvas进行截图
+  html2canvas(element, {
+    scale: 2, // 提高截图质量
+    logging: false, // 关闭日志
+    useCORS: true, // 允许跨域图片
+    allowTaint: true // 允许污染图片
+  }).then(canvas => {
+    // 创建下载链接
+    console.log("🚀 ~ canvas:",canvas)
+    const link = document.createElement('a');
+    link.download = '截图_' + new Date().getTime() + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }).catch(err => {
+    console.error('截图失败:', err);
+    alert('截图失败，请重试');
+  });
+}
+
 const controlList = [
-  {
-    id: 0, icon: icon0, iconW: VW(20), iconH: VH(15.5), fn: () => {
-    }
-  },
+  {id: 0, icon: icon0, iconW: VW(20), iconH: VH(15.5), fn: () => captureElement()},
   {id: 1, icon: icon1, iconW: VW(20), iconH: VH(20), fn: () => exitFullscreenOrFullscreen()},
   {id: 2, icon: icon2, iconW: VW(20), iconH: VH(20), fn: () => zoomControl('+')},
   {id: 3, icon: icon3, iconW: VW(20), iconH: VH(4), fn: () => zoomControl('-')},
