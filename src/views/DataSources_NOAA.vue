@@ -1292,6 +1292,65 @@ onMounted(() => {
       })
       .catch(error => console.error(error));
 
+  fetch("assets/testData/water-gbr.json")
+      .then(response => response.json())
+      .then(data => {
+        const velocityLayer = L.velocityLayer({
+          displayValues: true,
+          displayOptions: {
+            velocityType: "GBR Water",
+            position: "bottomleft",
+            emptyString: "No water current data",
+            showCardinal: true
+          },
+          data: data,
+          maxVelocity: 2
+        });
+
+        layerControl.addOverlay(velocityLayer, "水流 - 大堡礁");
+      })
+      .catch(error => console.error(error));
+
+  fetch("assets/testData/wind-gbr.json")
+      .then(response => response.json())
+      .then(data => {
+        const velocityLayer = L.velocityLayer({
+          displayValues: true,
+          displayOptions: {
+            velocityType: "GBR Water",
+            position: "bottomleft",
+            emptyString: "No water data"
+          },
+          data: data,
+          maxVelocity: 0.6,
+          velocityScale: 0.1, // arbitrary default 0.005
+          colorScale: ["rgb(255,41,243)"]
+        });
+
+        layerControl.addOverlay(velocityLayer, "洋流 - 大堡礁");
+      })
+      .catch(error => console.error(error));
+
+  fetch("assets/testData/wind-global.json")
+      .then(response => response.json())
+      .then(data => {
+        const velocityLayer = L.velocityLayer({
+          displayValues: true,//在地图上显示风速和方向
+          displayOptions: { //用于配置显示选项的参数，包括风速类型、位置和无数据时的显示信息
+            velocityType: "AAAA",
+            position: "bottomleft",
+            emptyString: "No wind data"
+          },
+          data: data,
+          maxVelocity: 15,
+          colorScale: ["rgb(255,41,243)"]
+        });
+
+        layerControl.addOverlay(velocityLayer, "风 - 全球");
+        velocityLayer.addTo(map);
+      })
+      .catch(error => console.error(error));
+
   // getServerData({})
   //     // .then(response => response.json())
   //     .then(data => {
